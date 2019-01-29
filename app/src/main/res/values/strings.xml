@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">StickerKeyboard</string>
+    <string name="ime_service_label">IME Service</string>
+</resources>
