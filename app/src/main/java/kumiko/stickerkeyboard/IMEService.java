@@ -10,7 +10,6 @@ import android.view.View;
 public class IMEService extends InputMethodService {
     @Override
     public View onCreateInputView() {
-
-
+        return new StickerKeyboardView(this);
     }
 }

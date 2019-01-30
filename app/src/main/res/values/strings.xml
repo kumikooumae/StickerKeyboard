@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">StickerKeyboard</string>
     <string name="ime_service_label">IME Service</string>
+    <string name="language_switch_key">Switch Language</string>
 </resources>
