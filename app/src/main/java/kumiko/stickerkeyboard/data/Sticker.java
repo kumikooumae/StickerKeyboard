@@ -11,16 +11,17 @@ import static androidx.room.ForeignKey.CASCADE;
 @Fts4
 @Entity(tableName = Sticker.TABLE_NAME,
         foreignKeys = @ForeignKey(
-        entity = StickerPack.class,
-        parentColumns = StickerPack.ROWID,
-        childColumns = Sticker.PACK_ID,
-        onDelete = CASCADE,
-        onUpdate = CASCADE))
+            entity = StickerPack.class,
+            parentColumns = StickerPack.ROWID,
+            childColumns = Sticker.PACK_ID,
+            onDelete = CASCADE,
+            onUpdate = CASCADE
+        ))
 public class Sticker {
 
     static final String TABLE_NAME = "stickers";
 
-    private static final String ROWID = "rowid";
+    static final String ROWID = "rowid";
 
     private static final String FILE_NAME = "file_name";
 

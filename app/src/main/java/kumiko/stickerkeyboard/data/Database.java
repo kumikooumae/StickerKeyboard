@@ -11,6 +11,8 @@ public abstract class Database extends RoomDatabase {
 
     public abstract StickerPackDao stickerPackDao();
 
+    public abstract HistoryDao historyDao();
+
     public static Database instance;
 
     public static synchronized Database getInstance(Context context) {
