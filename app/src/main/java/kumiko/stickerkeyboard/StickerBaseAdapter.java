@@ -2,7 +2,6 @@ package kumiko.stickerkeyboard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +15,11 @@ import java.util.List;
 
 import kumiko.stickerkeyboard.data.Sticker;
 
-class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerViewHolder> {
+abstract class StickerBaseAdapter extends RecyclerView.Adapter<StickerBaseAdapter.StickerViewHolder> {
 
-    private List<Sticker> stickers;
+    List<Sticker> stickers;
 
-    private Context context;
-
-    private IMEService service;
+    Context context;
 
     static class StickerViewHolder extends RecyclerView.ViewHolder {
         ImageView sticker;
@@ -33,12 +30,9 @@ class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerViewHold
         }
     }
 
-    StickerAdapter(List<Sticker> stickers, Context context) {
+    StickerBaseAdapter(List<Sticker> stickers, Context context) {
         this.stickers = stickers;
         this.context = context;
-        if (context instanceof IMEService) {
-            this.service = (IMEService) context;
-        }
     }
 
     @NonNull
@@ -50,22 +44,11 @@ class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerViewHold
 
     @Override
     public void onBindViewHolder(@NonNull StickerViewHolder holder, int position) {
-        final Sticker sticker = stickers.get(position);
-
         Glide.with(context)
-                .load(FileHelper.getStickerFile(context, sticker))
+                .load(FileHelper.getStickerFile(context, stickers.get(position)))
                 .apply(RequestOptions.fitCenterTransform())
                 .error(Glide.with(context).load(android.R.drawable.stat_notify_error))
                 .into(holder.sticker);
-
-        holder.sticker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (service != null) {
-                    service.sendSticker(sticker);
-                }
-            }
-        });
     }
 
     @Override
