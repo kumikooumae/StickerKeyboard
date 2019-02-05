@@ -15,7 +15,7 @@ import java.util.List;
 
 import kumiko.stickerkeyboard.data.Sticker;
 
-abstract class StickerBaseAdapter extends RecyclerView.Adapter<StickerBaseAdapter.StickerViewHolder> {
+abstract class StickerBaseAdapter extends RecyclerView.Adapter {
 
     List<Sticker> stickers;
 
@@ -35,26 +35,20 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter<StickerBaseAdapte
         this.context = context;
     }
 
-    @NonNull
-    @Override
-    public StickerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    StickerViewHolder createStickerViewHolder(@NonNull ViewGroup parent) {
         ImageView sticker = (ImageView) LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_item, parent, false);
         return new StickerViewHolder(sticker);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull StickerViewHolder holder, int position) {
+    void loadSticker(@NonNull ImageView view, Sticker sticker) {
         Glide.with(context)
-                .load(FileHelper.getStickerFile(context, stickers.get(position)))
+                .load(FileHelper.getStickerFile(context, sticker))
                 .apply(RequestOptions.fitCenterTransform())
                 .error(Glide.with(context).load(android.R.drawable.stat_notify_error))
-                .into(holder.sticker);
+                .into(view);
     }
 
-    @Override
-    public int getItemCount() {
-        return stickers.size();
-    }
+    abstract Sticker getSticker(int position);
 
     void update(List<Sticker> stickers) {
         this.stickers = stickers;
