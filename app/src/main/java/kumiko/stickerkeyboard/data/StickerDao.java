@@ -19,4 +19,7 @@ public interface StickerDao {
 
     @Query("SELECT * FROM " + Sticker.TABLE_NAME + " WHERE " + Sticker.PACK_ID + " = :packId")
     List<Sticker> getStickers(int packId);
+
+    @Query("SELECT * FROM " + Sticker.TABLE_NAME + " WHERE " + Sticker.ROWID + " = :stickerId")
+    Sticker getSticker(int stickerId);
 }

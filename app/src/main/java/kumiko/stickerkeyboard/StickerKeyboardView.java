@@ -1,13 +1,80 @@
 package kumiko.stickerkeyboard;
 
 import android.content.Context;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import kumiko.stickerkeyboard.data.Database;
+import kumiko.stickerkeyboard.data.Sticker;
+import kumiko.stickerkeyboard.data.StickerPack;
 
 public class StickerKeyboardView extends FrameLayout {
-    public StickerKeyboardView(Context context) {
+
+    private IMEService service;
+
+    private LayoutInflater inflater;
+
+    private Database db;
+
+    private ArrayList<PackView> packViews = new ArrayList<>();
+
+    public StickerKeyboardView(@NonNull Context context) {
         super(context);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        LayoutInflater.from(context).inflate(R.layout.image_keyboard, this);
+        service = (IMEService) context;
+        inflater = LayoutInflater.from(context);
+        db = Database.getInstance(context);
+        inflater.inflate(R.layout.image_keyboard, this);
     }
+
+    private void loadPacks() {
+        addPackView(db.getHistoryStickers(), getResources().getString(R.string.history_pack_name));
+
+        List<StickerPack> packs = db.getAllStickerPacks();
+        List<Sticker> covers = new ArrayList<>();
+        for (StickerPack pack: packs) {
+            List<Sticker> stickers = db.getStickers(pack);
+            addPackView(stickers, pack.name);
+            covers.add(stickers.isEmpty() ? null : stickers.get(0));
+        }
+
+        ViewPager packsPager = findViewById(R.id.packs_pager);
+        packsPager.setAdapter(new StickerPackPagerAdapter(packViews));
+        TabLayout packsTab = findViewById(R.id.packs_tab);
+        packsTab.setupWithViewPager(packsPager);
+        packsTab.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        for (int i = 0; i < packsTab.getTabCount(); i++) {
+            ImageView tabItemView = (ImageView) inflater.inflate(R.layout.tab_item, null);
+            if (i == 0) {
+                tabItemView.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
+            } else {
+                Sticker cover = covers.get(i-1);
+                Glide.with(service)
+                        .load((cover != null) ? FileHelper.getStickerFile(service, cover) : null)
+                        .into(tabItemView);
+            }
+            TabLayout.Tab packTab = packsTab.getTabAt(i);
+            if (packTab != null) {
+                packTab.setCustomView(tabItemView);
+            }
+        }
+    }
+
+    private void addPackView(List<Sticker> stickers, String name) {
+        PackView packView = new PackView(service);
+        packView.setAdapter(new StickerKeyboardAdapter(stickers, service, name));
+        packViews.add(packView);
+    }
+
+
 }

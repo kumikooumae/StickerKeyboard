@@ -18,5 +18,5 @@ public interface HistoryDao {
     void deleteHistories(History... histories);
 
     @Query("SELECT * FROM " + History.TABLE_NAME)
-    List<Sticker> getHistories();
+    List<History> getHistories();
 }

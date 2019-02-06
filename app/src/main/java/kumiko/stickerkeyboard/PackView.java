@@ -8,29 +8,15 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-public class BasePackView extends RecyclerView {
+public class PackView extends RecyclerView {
 
     private int stickerSize;
 
     private GridLayoutManager manager;
 
-    public BasePackView(@NonNull Context context) {
+    public PackView(@NonNull Context context) {
         super(context);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        init(context);
-    }
-
-    public BasePackView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
-    public BasePackView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context);
-    }
-
-    private void init(Context context) {
         stickerSize = getResources().getDimensionPixelSize(R.dimen.sticker_size);
 
         manager = new GridLayoutManager(context, 1);
