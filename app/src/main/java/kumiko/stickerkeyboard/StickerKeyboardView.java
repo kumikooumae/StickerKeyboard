@@ -4,7 +4,10 @@ import android.content.Context;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -34,6 +37,28 @@ public class StickerKeyboardView extends FrameLayout {
         inflater = LayoutInflater.from(context);
         db = Database.getInstance(context);
         inflater.inflate(R.layout.image_keyboard, this);
+
+        loadPacks();
+
+        ImageButton imeSwitcher = findViewById(R.id.ime_switcher);
+        final InputMethodManager inputMethodManager = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imeSwitcher.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (inputMethodManager != null) {
+                    inputMethodManager.getLastInputMethodSubtype();
+                }
+            }
+        });
+        imeSwitcher.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (inputMethodManager != null) {
+                    inputMethodManager.showInputMethodPicker();
+                }
+                return true;
+            }
+        });
     }
 
     private void loadPacks() {
