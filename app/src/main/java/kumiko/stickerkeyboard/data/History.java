@@ -22,4 +22,8 @@ public class History {
 
     @ColumnInfo(name = STICKER_ID)
     public int stickerId;
+
+    public History(int stickerId) {
+        this.stickerId = stickerId;
+    }
 }

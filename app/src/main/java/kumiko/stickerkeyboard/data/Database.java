@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.room.Room;
@@ -18,6 +19,12 @@ public abstract class Database extends RoomDatabase {
     public abstract HistoryDao historyDao();
 
     public static Database instance;
+
+    private static final int MAX_HISTORIES = 50;
+
+    private List<History> histories;
+
+    private List<Sticker> historyStickers;
 
     public static synchronized Database getInstance(Context context) {
         if (instance == null) {
@@ -34,12 +41,37 @@ public abstract class Database extends RoomDatabase {
         return stickerDao().getStickers(pack.id);
     }
 
-    public List<Sticker> getHistoryStickers() {
-        List<History> histories = historyDao().getHistories();
-        ArrayList<Sticker> historyStickers = new ArrayList<>();
-        for (History history: histories) {
-            historyStickers.add(stickerDao().getSticker(history.stickerId));
+    public synchronized List<Sticker> getHistoryStickersReversed() {
+        if (histories == null || historyStickers == null) {
+            histories = historyDao().getHistories();
+            Collections.reverse(histories);
+            historyStickers = new ArrayList<>();
+            for (History history: histories) {
+                historyStickers.add(stickerDao().getSticker(history.stickerId));
+            }
         }
         return historyStickers;
+    }
+
+    public synchronized void refreshHistory(Sticker sticker) {
+        for (int i = 0; i < historyStickers.size(); i++) {
+            if (sticker.id == historyStickers.get(i).id) {
+                removeFromHistory(i);
+                break;
+            }
+        }
+        if (histories.size() >= MAX_HISTORIES || historyStickers.size() >= MAX_HISTORIES) {
+            removeFromHistory(MAX_HISTORIES);
+        }
+        History newHistory = new History(sticker.id);
+        histories.add(0, newHistory);
+        historyStickers.add(0, sticker);
+        historyDao().insertHistories(newHistory);
+    }
+
+    private void removeFromHistory(int position) {
+        History removed = histories.remove(position);
+        historyStickers.remove(position);
+        historyDao().deleteHistories(removed);
     }
 }

@@ -28,7 +28,9 @@ public class StickerKeyboardView extends FrameLayout {
 
     private Database db;
 
-    private ArrayList<PackView> packViews = new ArrayList<>();
+    private List<PackView> packViews = new ArrayList<>();
+
+    private StickerKeyboardAdapter historyAdapter;
 
     public StickerKeyboardView(@NonNull Context context) {
         super(context);
@@ -62,13 +64,18 @@ public class StickerKeyboardView extends FrameLayout {
     }
 
     private void loadPacks() {
-        addPackView(db.getHistoryStickers(), getResources().getString(R.string.history_pack_name));
+        PackView historyView = new PackView(service);
+        historyAdapter = new StickerKeyboardAdapter(db.getHistoryStickersReversed(), service, getResources().getString(R.string.history_pack_name));
+        historyView.setAdapter(historyAdapter);
+        packViews.add(historyView);
 
         List<StickerPack> packs = db.getAllStickerPacks();
         List<Sticker> covers = new ArrayList<>();
         for (StickerPack pack: packs) {
             List<Sticker> stickers = db.getStickers(pack);
-            addPackView(stickers, pack.name);
+            PackView packView = new PackView(service);
+            packView.setAdapter(new StickerKeyboardAdapter(stickers, service, pack.name));
+            packViews.add(packView);
             covers.add(stickers.isEmpty() ? null : stickers.get(0));
         }
 
@@ -95,11 +102,8 @@ public class StickerKeyboardView extends FrameLayout {
         }
     }
 
-    private void addPackView(List<Sticker> stickers, String name) {
-        PackView packView = new PackView(service);
-        packView.setAdapter(new StickerKeyboardAdapter(stickers, service, name));
-        packViews.add(packView);
+    void refreshHistory(Sticker sticker) {
+        db.refreshHistory(sticker);
+        historyAdapter.update(db.getHistoryStickersReversed());
     }
-
-
 }
