@@ -9,6 +9,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 
 import com.bumptech.glide.Glide;
 
@@ -86,7 +88,7 @@ public class StickerKeyboardView extends FrameLayout {
         packsTab.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         for (int i = 0; i < packsTab.getTabCount(); i++) {
-            ImageView tabItemView = (ImageView) inflater.inflate(R.layout.tab_item, null);
+            ImageView tabItemView = (ImageView) inflater.inflate(R.layout.tab_item, new LinearLayout(service), false);
             if (i == 0) {
                 tabItemView.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
             } else {
