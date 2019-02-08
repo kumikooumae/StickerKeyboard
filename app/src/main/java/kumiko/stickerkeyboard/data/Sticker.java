@@ -29,6 +29,12 @@ public class Sticker {
 
     private static final String POSITION = "position";
 
+    private static final String TYPE = "type";
+
+    public enum Type {
+        JPEG, PNG, GIF, WEBP
+    }
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ROWID)
     public int id;
@@ -42,9 +48,13 @@ public class Sticker {
     @ColumnInfo(name = POSITION)
     public int position;
 
-    public Sticker(String fileName, int packId, int position) {
+    @ColumnInfo(name = TYPE)
+    public Type type;
+
+    public Sticker(String fileName, int packId, int position, Type type) {
         this.fileName = fileName;
         this.packId = packId;
         this.position = position;
+        this.type = type;
     }
 }
