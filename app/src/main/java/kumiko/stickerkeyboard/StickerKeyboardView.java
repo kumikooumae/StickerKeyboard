@@ -1,6 +1,5 @@
 package kumiko.stickerkeyboard;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
@@ -12,7 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 
 import com.bumptech.glide.Glide;
 
@@ -34,6 +32,8 @@ public class StickerKeyboardView extends FrameLayout {
 
     private CreateStickerAdaptersTask createStickerAdaptersTask;
 
+    private RefreshHistoryTask refreshHistoryTask;
+
     public StickerKeyboardView(@NonNull Context context) {
         super(context);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -44,6 +44,14 @@ public class StickerKeyboardView extends FrameLayout {
         createStickerAdaptersTask = new CreateStickerAdaptersTask();
         createStickerAdaptersTask.setListener(getOnCreatedStickerAdaptersListener());
         createStickerAdaptersTask.execute();
+
+        refreshHistoryTask = new RefreshHistoryTask();
+        refreshHistoryTask.setListener(new RefreshHistoryTask.Listener() {
+            @Override
+            public void onFinish(List<Sticker> historyStickers) {
+                historyAdapter.update(historyStickers);
+            }
+        });
 
         ImageButton imeSwitcher = findViewById(R.id.ime_switcher);
         final InputMethodManager inputMethodManager = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -67,8 +75,7 @@ public class StickerKeyboardView extends FrameLayout {
     }
 
     void refreshHistory(Sticker sticker) {
-//        db.refreshHistory(sticker);
-//        historyAdapter.update(db.getHistoryStickersReversed());
+        refreshHistoryTask.execute(sticker);
     }
 
     private static class CreateStickerAdaptersTask extends AsyncTask<Void, Void, List<StickerKeyboardAdapter>> {
@@ -148,9 +155,43 @@ public class StickerKeyboardView extends FrameLayout {
         };
     }
 
+    private static class RefreshHistoryTask extends AsyncTask<Sticker, Void, List<Sticker>> {
+
+        private Database db;
+
+        private Listener listener;
+
+        RefreshHistoryTask() {
+            super();
+            db = Database.getInstance(MyApplication.getAppContext());
+        }
+
+        @Override
+        protected List<Sticker> doInBackground(Sticker... stickers) {
+            db.refreshHistory(stickers[0]);
+            return db.getHistoryStickersReversed();
+        }
+
+        @Override
+        protected void onPostExecute(List<Sticker> historyStickers) {
+            if (listener != null) {
+                listener.onFinish(historyStickers);
+            }
+        }
+
+        void setListener(Listener listener) {
+            this.listener = listener;
+        }
+
+        interface Listener {
+            void onFinish(List<Sticker> historyStickers);
+        }
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         createStickerAdaptersTask.setListener(null);
+        refreshHistoryTask.setListener(null);
         super.onDetachedFromWindow();
     }
 }
