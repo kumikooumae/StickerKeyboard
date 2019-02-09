@@ -88,7 +88,7 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
     }
 
     @Override
-    Sticker getSticker(int position) {
-        return stickers.get(position - 1);
+    Sticker getSticker(int onBindPosition) {
+        return stickers.get(onBindPosition - 1);
     }
 }

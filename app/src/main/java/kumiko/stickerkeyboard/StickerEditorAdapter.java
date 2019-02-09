@@ -47,7 +47,7 @@ class StickerEditorAdapter extends StickerBaseAdapter {
     }
 
     @Override
-    Sticker getSticker(int position) {
-        return stickers.get(position);
+    Sticker getSticker(int onBindPosition) {
+        return stickers.get(onBindPosition);
     }
 }

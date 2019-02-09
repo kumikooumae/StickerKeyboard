@@ -2,6 +2,7 @@ package kumiko.stickerkeyboard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,10 +47,19 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
                 .into(view);
     }
 
-    abstract Sticker getSticker(int position);
+    abstract Sticker getSticker(int onBindPosition);
 
     void update(List<Sticker> stickers) {
         this.stickers = stickers;
         notifyDataSetChanged();
+    }
+
+    @Nullable
+    Sticker getCover() {
+        if (stickers == null || stickers.isEmpty()) {
+            return null;
+        } else {
+            return stickers.get(0);
+        }
     }
 }
