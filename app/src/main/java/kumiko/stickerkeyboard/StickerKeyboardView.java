@@ -46,12 +46,7 @@ public class StickerKeyboardView extends FrameLayout {
         createStickerAdaptersTask.execute();
 
         refreshHistoryTask = new RefreshHistoryTask();
-        refreshHistoryTask.setListener(new RefreshHistoryTask.Listener() {
-            @Override
-            public void onFinish(List<Sticker> historyStickers) {
-                historyAdapter.update(historyStickers);
-            }
-        });
+        refreshHistoryTask.setListener(getOnRefreshedHistoryListener());
 
         ImageButton imeSwitcher = findViewById(R.id.ime_switcher);
         final InputMethodManager inputMethodManager = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -186,6 +181,17 @@ public class StickerKeyboardView extends FrameLayout {
         interface Listener {
             void onFinish(List<Sticker> historyStickers);
         }
+    }
+
+    private RefreshHistoryTask.Listener getOnRefreshedHistoryListener() {
+        return new RefreshHistoryTask.Listener() {
+            @Override
+            public void onFinish(List<Sticker> historyStickers) {
+                if (historyAdapter != null) {
+                    historyAdapter.update(historyStickers);
+                }
+            }
+        };
     }
 
     @Override
