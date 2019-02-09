@@ -12,8 +12,8 @@ import kumiko.stickerkeyboard.data.Sticker;
 
 class StickerEditorAdapter extends StickerBaseAdapter {
 
-    StickerEditorAdapter(List<Sticker> stickers, Context context) {
-        super(stickers, context);
+    StickerEditorAdapter(List<Sticker> stickers) {
+        super(stickers);
     }
 
     @NonNull

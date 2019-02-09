@@ -17,8 +17,6 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
 
     private static final int VIEW_TYPE_STICKER = 1;
 
-    private IMEService service;
-
     private String packName;
 
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -30,9 +28,8 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
         }
     }
 
-    StickerKeyboardAdapter(List<Sticker> stickers, IMEService service, String packName) {
-        super(stickers, service);
-        this.service = service;
+    StickerKeyboardAdapter(List<Sticker> stickers, String packName) {
+        super(stickers);
         this.packName = packName;
     }
 
@@ -44,21 +41,22 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
             return new HeaderViewHolder(packTitle);
         } else {    // VIEW_TYPE_STICKER
             final StickerViewHolder holder = createStickerViewHolder(parent);
-            holder.sticker.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (service != null) {
+            if (parent.getContext() instanceof IMEService) {
+                final IMEService service = (IMEService) parent.getContext();
+                holder.sticker.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                         service.sendSticker(stickers.get(holder.getAdapterPosition()));
                     }
-                }
-            });
-            holder.sticker.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    // Pop up
-                    return false;
-                }
-            });
+                });
+                holder.sticker.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        // Pop up
+                        return false;
+                    }
+                });
+            }
             return holder;
         }
     }

@@ -19,8 +19,6 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
 
     List<Sticker> stickers;
 
-    Context context;
-
     static class StickerViewHolder extends RecyclerView.ViewHolder {
         ImageView sticker;
 
@@ -30,9 +28,8 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
         }
     }
 
-    StickerBaseAdapter(List<Sticker> stickers, Context context) {
+    StickerBaseAdapter(List<Sticker> stickers) {
         this.stickers = stickers;
-        this.context = context;
     }
 
     StickerViewHolder createStickerViewHolder(@NonNull ViewGroup parent) {
@@ -41,6 +38,7 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
     }
 
     void loadSticker(@NonNull ImageView view, Sticker sticker) {
+        Context context = view.getContext();
         Glide.with(context)
                 .load(FileHelper.getStickerFile(context, sticker))
                 .apply(RequestOptions.fitCenterTransform())

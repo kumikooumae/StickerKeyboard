@@ -1,6 +1,7 @@
 package kumiko.stickerkeyboard;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -67,7 +68,7 @@ public class StickerKeyboardView extends FrameLayout {
 
     private void loadPacks() {
         PackView historyView = new PackView(service);
-        historyAdapter = new StickerKeyboardAdapter(db.getHistoryStickersReversed(), service, getResources().getString(R.string.history_pack_name));
+        historyAdapter = new StickerKeyboardAdapter(db.getHistoryStickersReversed(), getResources().getString(R.string.history_pack_name));
         historyView.setAdapter(historyAdapter);
         packViews.add(historyView);
 
@@ -76,7 +77,7 @@ public class StickerKeyboardView extends FrameLayout {
         for (StickerPack pack: packs) {
             List<Sticker> stickers = db.getStickers(pack);
             PackView packView = new PackView(service);
-            packView.setAdapter(new StickerKeyboardAdapter(stickers, service, pack.name));
+            packView.setAdapter(new StickerKeyboardAdapter(stickers, pack.name));
             packViews.add(packView);
             covers.add(stickers.isEmpty() ? null : stickers.get(0));
         }
