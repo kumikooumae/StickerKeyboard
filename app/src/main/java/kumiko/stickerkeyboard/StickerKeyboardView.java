@@ -30,7 +30,7 @@ public class StickerKeyboardView extends FrameLayout {
 
     private StickerKeyboardAdapter historyAdapter;
 
-    private CreateStickerAdaptersTask createStickerAdaptersTask;
+    private GetStickerPacksTask getStickerPacksTask;
 
     private RefreshHistoryTask refreshHistoryTask;
 
@@ -41,9 +41,9 @@ public class StickerKeyboardView extends FrameLayout {
         inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.image_keyboard, this);
 
-        createStickerAdaptersTask = new CreateStickerAdaptersTask();
-        createStickerAdaptersTask.setListener(getOnCreatedStickerAdaptersListener());
-        createStickerAdaptersTask.execute();
+        getStickerPacksTask = new GetStickerPacksTask();
+        getStickerPacksTask.setListener(getOnLoadedStickerPacksListener());
+        getStickerPacksTask.execute();
 
         refreshHistoryTask = new RefreshHistoryTask();
         refreshHistoryTask.setListener(getOnRefreshedHistoryListener());
@@ -73,27 +73,25 @@ public class StickerKeyboardView extends FrameLayout {
         refreshHistoryTask.execute(sticker);
     }
 
-    private static class CreateStickerAdaptersTask extends AsyncTask<Void, Void, List<StickerKeyboardAdapter>> {
+    private static class GetStickerPacksTask extends AsyncTask<Void, Void, List<StickerPack>> {
 
         private Listener listener;
 
         @Override
-        protected List<StickerKeyboardAdapter> doInBackground(Void... params) {
-            Database db = Database.getInstance(MyApplication.getAppContext());
-            List<StickerKeyboardAdapter> adapters = new ArrayList<>();
-            adapters.add(new StickerKeyboardAdapter(db.getHistoryStickersReversed(), MyApplication.getAppContext().getResources().getString(R.string.history_pack_name)));
+        protected List<StickerPack> doInBackground(Void... params) {
+            Context appContext = MyApplication.getAppContext();
+            Database db = Database.getInstance(appContext);
             List<StickerPack> packs = db.getAllStickerPacks();
-            for (StickerPack pack: packs) {
-                List<Sticker> stickers = db.getStickers(pack);
-                adapters.add(new StickerKeyboardAdapter(stickers, pack.getName()));
-            }
-            return adapters;
+            StickerPack historyPack = new StickerPack(appContext.getResources().getString(R.string.history_pack_name));
+            historyPack.setStickers(db.getHistoryStickersReversed());
+            packs.add(0, historyPack);
+            return packs;
         }
 
         @Override
-        protected void onPostExecute(List<StickerKeyboardAdapter> stickerKeyboardAdapters) {
+        protected void onPostExecute(List<StickerPack> packs) {
             if (listener != null) {
-                listener.onFinish(stickerKeyboardAdapters);
+                listener.onFinish(packs);
             }
         }
 
@@ -102,28 +100,21 @@ public class StickerKeyboardView extends FrameLayout {
         }
 
         interface Listener {
-            void onFinish(List<StickerKeyboardAdapter> stickerKeyboardAdapters);
+            void onFinish(List<StickerPack> packs);
         }
     }
 
-    private CreateStickerAdaptersTask.Listener getOnCreatedStickerAdaptersListener() {
-        return new CreateStickerAdaptersTask.Listener() {
-            /**
-             * Create views with adapters, and load thumbnail into TabLayout item
-             *
-             * @param stickerKeyboardAdapters List<StickerKeyboardAdapter> created in CreateStickerAdaptersTask
-             */
+    private GetStickerPacksTask.Listener getOnLoadedStickerPacksListener() {
+        return new GetStickerPacksTask.Listener() {
             @Override
-            public void onFinish(List<StickerKeyboardAdapter> stickerKeyboardAdapters) {
-                historyAdapter = stickerKeyboardAdapters.get(0);
+            public void onFinish(List<StickerPack> packs) {
                 List<PackView> packViews = new ArrayList<>();
-                List<Sticker> covers = new ArrayList<>();
-                for (StickerKeyboardAdapter stickerKeyboardAdapter: stickerKeyboardAdapters) {
+                for (StickerPack pack: packs) {
                     PackView packView = new PackView(service);
-                    packView.setAdapter(stickerKeyboardAdapter);
+                    packView.setAdapter(new StickerKeyboardAdapter(pack.getStickers(), pack.getName()));
                     packViews.add(packView);
-                    covers.add(stickerKeyboardAdapter.getCover());
                 }
+                historyAdapter = (StickerKeyboardAdapter) packViews.get(0).getAdapter();
 
                 ViewPager packsPager = findViewById(R.id.packs_pager);
                 packsPager.setAdapter(new StickerPackPagerAdapter(packViews));
@@ -136,7 +127,7 @@ public class StickerKeyboardView extends FrameLayout {
                     if (i == 0) {
                         tabItemView.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
                     } else {
-                        Sticker cover = covers.get(i);
+                        Sticker cover = packs.get(i).getStickers().get(0);
                         Glide.with(service)
                                 .load((cover != null) ? FileHelper.getStickerFile(service, cover) : null)
                                 .into(tabItemView);
@@ -196,7 +187,7 @@ public class StickerKeyboardView extends FrameLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        createStickerAdaptersTask.setListener(null);
+        getStickerPacksTask.setListener(null);
         refreshHistoryTask.setListener(null);
         super.onDetachedFromWindow();
     }
