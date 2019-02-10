@@ -34,7 +34,11 @@ public abstract class Database extends RoomDatabase {
     }
 
     public List<StickerPack> getAllStickerPacks() {
-        return stickerPackDao().getAllStickerPacks();
+        List<StickerPack> packs = stickerPackDao().getAllStickerPacks();
+        for (StickerPack pack: packs) {
+            pack.stickers = getStickers(pack);
+        }
+        return packs;
     }
 
     public List<Sticker> getStickers(@NonNull StickerPack pack) {
