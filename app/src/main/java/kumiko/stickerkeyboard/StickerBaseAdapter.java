@@ -53,13 +53,4 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
         this.stickers = stickers;
         notifyDataSetChanged();
     }
-
-    @Nullable
-    Sticker getCover() {
-        if (stickers == null || stickers.isEmpty()) {
-            return null;
-        } else {
-            return stickers.get(0);
-        }
-    }
 }
