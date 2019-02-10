@@ -1,5 +1,6 @@
 package kumiko.stickerkeyboard;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -46,6 +50,12 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
     @Override
     public void onBindViewHolder(@NonNull PackViewHolder holder, int position) {
         StickerPack pack = packs.get(position);
+        Context context = holder.cover.getContext();
+        Glide.with(context)
+                .load(FileHelper.getStickerFile(context, pack.getStickers().get(0)))
+                .apply(RequestOptions.fitCenterTransform())
+                .error(Glide.with(context).load(android.R.drawable.stat_notify_error))
+                .into(holder.cover);
         holder.title.setText(pack.getName());
     }
 

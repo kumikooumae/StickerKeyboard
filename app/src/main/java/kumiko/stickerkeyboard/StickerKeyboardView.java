@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,6 +131,8 @@ public class StickerKeyboardView extends FrameLayout {
                         Sticker cover = packs.get(i).getStickers().get(0);
                         Glide.with(service)
                                 .load((cover != null) ? FileHelper.getStickerFile(service, cover) : null)
+                                .apply(RequestOptions.fitCenterTransform())
+                                .error(Glide.with(service).load(android.R.drawable.stat_notify_error))
                                 .into(tabItemView);
                     }
                     TabLayout.Tab packTab = packsTab.getTabAt(i);
