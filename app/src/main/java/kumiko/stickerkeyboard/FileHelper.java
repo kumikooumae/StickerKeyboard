@@ -13,13 +13,13 @@ class FileHelper {
     private static final String TAG = "FileHelper";
 
     static File getStickerFile(@NonNull Context context, @NonNull Sticker sticker) {
-        return new File(new File(context.getFilesDir(), Integer.toString(sticker.packId)), sticker.fileName);
+        return new File(new File(context.getFilesDir(), Integer.toString(sticker.getPackId())), sticker.getFileName());
     }
 
     static void deleteSticker(@NonNull Context context, @NonNull Sticker sticker) {
-        File file = new File(new File(context.getFilesDir(), Integer.toString(sticker.packId)), sticker.fileName);
+        File file = new File(new File(context.getFilesDir(), Integer.toString(sticker.getPackId())), sticker.getFileName());
         if (!file.delete()) {
-            Log.d(TAG, "deleteSticker: Failed to delete " + sticker.fileName);
+            Log.d(TAG, "deleteSticker: Failed to delete " + sticker.getFileName());
         }
     }
 

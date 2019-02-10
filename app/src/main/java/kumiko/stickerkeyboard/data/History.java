@@ -26,4 +26,8 @@ public class History {
     public History(int stickerId) {
         this.stickerId = stickerId;
     }
+
+    public int getStickerId() {
+        return stickerId;
+    }
 }

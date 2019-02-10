@@ -33,4 +33,20 @@ public class StickerPack {
     public StickerPack(String name) {
         this.name = name;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Sticker> getStickers() {
+        return stickers;
+    }
+
+    public void setStickers(List<Sticker> stickers) {
+        this.stickers = stickers;
+    }
 }

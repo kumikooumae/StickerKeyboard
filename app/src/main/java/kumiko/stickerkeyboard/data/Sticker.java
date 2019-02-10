@@ -57,4 +57,24 @@ public class Sticker {
         this.position = position;
         this.type = type;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public int getPackId() {
+        return packId;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public Type getType() {
+        return type;
+    }
 }

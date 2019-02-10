@@ -85,7 +85,7 @@ public class StickerKeyboardView extends FrameLayout {
             List<StickerPack> packs = db.getAllStickerPacks();
             for (StickerPack pack: packs) {
                 List<Sticker> stickers = db.getStickers(pack);
-                adapters.add(new StickerKeyboardAdapter(stickers, pack.name));
+                adapters.add(new StickerKeyboardAdapter(stickers, pack.getName()));
             }
             return adapters;
         }

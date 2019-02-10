@@ -42,7 +42,7 @@ public abstract class Database extends RoomDatabase {
     }
 
     public List<Sticker> getStickers(@NonNull StickerPack pack) {
-        return stickerDao().getStickers(pack.id);
+        return stickerDao().getStickers(pack.getId());
     }
 
     public synchronized List<Sticker> getHistoryStickersReversed() {
@@ -51,7 +51,7 @@ public abstract class Database extends RoomDatabase {
             Collections.reverse(histories);
             historyStickers = new ArrayList<>();
             for (History history: histories) {
-                historyStickers.add(stickerDao().getSticker(history.stickerId));
+                historyStickers.add(stickerDao().getSticker(history.getStickerId()));
             }
         }
         return historyStickers;
@@ -59,7 +59,7 @@ public abstract class Database extends RoomDatabase {
 
     public synchronized void refreshHistory(Sticker sticker) {
         for (int i = 0; i < historyStickers.size(); i++) {
-            if (sticker.id == historyStickers.get(i).id) {
+            if (sticker.getId() == historyStickers.get(i).getId()) {
                 removeFromHistory(i);
                 break;
             }
@@ -67,7 +67,7 @@ public abstract class Database extends RoomDatabase {
         if (histories.size() >= MAX_HISTORIES || historyStickers.size() >= MAX_HISTORIES) {
             removeFromHistory(MAX_HISTORIES);
         }
-        History newHistory = new History(sticker.id);
+        History newHistory = new History(sticker.getId());
         histories.add(0, newHistory);
         historyStickers.add(0, sticker);
         historyDao().insertHistories(newHistory);

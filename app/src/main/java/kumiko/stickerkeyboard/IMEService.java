@@ -50,7 +50,7 @@ public class IMEService extends InputMethodService {
 
     void sendSticker(Sticker sticker) {
         File stickerFile = FileHelper.getStickerFile(this, sticker);
-        switch (sticker.type) {
+        switch (sticker.getType()) {
             case JPEG:
                 doCommitContent(stickerFile, MIME_JPEG);
                 break;

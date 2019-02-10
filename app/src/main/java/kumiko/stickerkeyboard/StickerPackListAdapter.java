@@ -46,7 +46,7 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
     @Override
     public void onBindViewHolder(@NonNull PackViewHolder holder, int position) {
         StickerPack pack = packs.get(position);
-        holder.title.setText(pack.name);
+        holder.title.setText(pack.getName());
     }
 
     @Override
