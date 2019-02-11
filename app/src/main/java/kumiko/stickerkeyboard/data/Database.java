@@ -78,4 +78,9 @@ public abstract class Database extends RoomDatabase {
         historyStickers.remove(position);
         historyDao().deleteHistories(removed);
     }
+
+    public List<StickerPack> addNewEmptyPack(String name) {
+        stickerPackDao().insertStickerPacks(new StickerPack(name));
+        return getAllStickerPacks();
+    }
 }

@@ -63,4 +63,9 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
     public int getItemCount() {
         return packs.size();
     }
+
+    void update(List<StickerPack> packs) {
+        this.packs = packs;
+        notifyDataSetChanged();
+    }
 }
