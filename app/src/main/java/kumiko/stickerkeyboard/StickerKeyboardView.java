@@ -11,13 +11,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-
 import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.Sticker;
@@ -74,15 +70,15 @@ public class StickerKeyboardView extends FrameLayout {
         refreshHistoryTask.execute(sticker);
     }
 
-    private static class GetStickerPacksTask extends AsyncTask<Void, Void, List<StickerPack>> {
+    private static class GetStickerPacksTask extends AsyncTask<Void, Void, ArrayList<StickerPack>> {
 
         private Listener listener;
 
         @Override
-        protected List<StickerPack> doInBackground(Void... params) {
+        protected ArrayList<StickerPack> doInBackground(Void... params) {
             Context appContext = MyApplication.getAppContext();
             Database db = Database.getInstance(appContext);
-            List<StickerPack> packs = db.getAllStickerPacks();
+            ArrayList<StickerPack> packs = db.getAllStickerPacks();
             StickerPack historyPack = new StickerPack(appContext.getResources().getString(R.string.history_pack_name));
             historyPack.setStickers(db.getHistoryStickersReversed());
             packs.add(0, historyPack);
@@ -90,7 +86,7 @@ public class StickerKeyboardView extends FrameLayout {
         }
 
         @Override
-        protected void onPostExecute(List<StickerPack> packs) {
+        protected void onPostExecute(ArrayList<StickerPack> packs) {
             if (listener != null) {
                 listener.onFinish(packs);
             }
@@ -101,15 +97,15 @@ public class StickerKeyboardView extends FrameLayout {
         }
 
         interface Listener {
-            void onFinish(List<StickerPack> packs);
+            void onFinish(ArrayList<StickerPack> packs);
         }
     }
 
     private GetStickerPacksTask.Listener getOnLoadedStickerPacksListener() {
         return new GetStickerPacksTask.Listener() {
             @Override
-            public void onFinish(List<StickerPack> packs) {
-                List<PackView> packViews = new ArrayList<>();
+            public void onFinish(ArrayList<StickerPack> packs) {
+                ArrayList<PackView> packViews = new ArrayList<>();
                 for (StickerPack pack: packs) {
                     PackView packView = new PackView(service);
                     packView.setAdapter(new StickerKeyboardAdapter(pack.getStickers(), pack.getName()));
@@ -144,7 +140,7 @@ public class StickerKeyboardView extends FrameLayout {
         };
     }
 
-    private static class RefreshHistoryTask extends AsyncTask<Sticker, Void, List<Sticker>> {
+    private static class RefreshHistoryTask extends AsyncTask<Sticker, Void, ArrayList<Sticker>> {
 
         private Database db;
 
@@ -156,13 +152,13 @@ public class StickerKeyboardView extends FrameLayout {
         }
 
         @Override
-        protected List<Sticker> doInBackground(Sticker... stickers) {
+        protected ArrayList<Sticker> doInBackground(Sticker... stickers) {
             db.refreshHistory(stickers[0]);
             return db.getHistoryStickersReversed();
         }
 
         @Override
-        protected void onPostExecute(List<Sticker> historyStickers) {
+        protected void onPostExecute(ArrayList<Sticker> historyStickers) {
             if (listener != null) {
                 listener.onFinish(historyStickers);
             }
@@ -173,14 +169,14 @@ public class StickerKeyboardView extends FrameLayout {
         }
 
         interface Listener {
-            void onFinish(List<Sticker> historyStickers);
+            void onFinish(ArrayList<Sticker> historyStickers);
         }
     }
 
     private RefreshHistoryTask.Listener getOnRefreshedHistoryListener() {
         return new RefreshHistoryTask.Listener() {
             @Override
-            public void onFinish(List<Sticker> historyStickers) {
+            public void onFinish(ArrayList<Sticker> historyStickers) {
                 if (historyAdapter != null) {
                     historyAdapter.update(historyStickers);
                 }

@@ -7,5 +7,6 @@
     <string name="add_pack">Add pack</string>
     <string name="pack_name">Pack name</string>
     <string name="title_activity_pack">PackActivity</string>
+    <string name="pack_name_extra_key">pack_name</string>
     <string name="stickers_extra_key">stickers</string>
 </resources>

@@ -3,7 +3,6 @@ package kumiko.stickerkeyboard.data;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = History.TABLE_NAME,

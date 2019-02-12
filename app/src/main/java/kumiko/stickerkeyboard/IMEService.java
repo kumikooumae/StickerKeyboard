@@ -12,9 +12,7 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-
 import java.io.File;
-
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.Sticker;
 

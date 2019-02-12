@@ -10,9 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
-
-import java.util.List;
-
+import java.util.ArrayList;
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.StickerPack;
 
@@ -54,17 +52,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private static class LoadPacksTask extends AsyncTask<Void, Void, List<StickerPack>> {
+    private static class LoadPacksTask extends AsyncTask<Void, Void, ArrayList<StickerPack>> {
 
         private Listener listener;
 
         @Override
-        protected List<StickerPack> doInBackground(Void... voids) {
+        protected ArrayList<StickerPack> doInBackground(Void... voids) {
             return Database.getInstance(MyApplication.getAppContext()).getAllStickerPacks();
         }
 
         @Override
-        protected void onPostExecute(List<StickerPack> packs) {
+        protected void onPostExecute(ArrayList<StickerPack> packs) {
             if (listener != null) {
                 listener.onFinish(packs);
             }
@@ -75,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         interface Listener {
-            void onFinish(List<StickerPack> packs);
+            void onFinish(ArrayList<StickerPack> packs);
         }
     }
 
     private LoadPacksTask.Listener getOnLoadedPacksListener() {
         return new LoadPacksTask.Listener() {
             @Override
-            public void onFinish(List<StickerPack> packs) {
+            public void onFinish(ArrayList<StickerPack> packs) {
                 RecyclerView packList = findViewById(R.id.pack_list);
                 stickerPackListAdapter = new StickerPackListAdapter(packs);
                 packList.setAdapter(stickerPackListAdapter);
@@ -90,15 +88,15 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private static class AddNewEmptyPackTask extends AsyncTask<String, Void, List<StickerPack>> {
+    private static class AddNewEmptyPackTask extends AsyncTask<String, Void, ArrayList<StickerPack>> {
 
         @Override
-        protected List<StickerPack> doInBackground(String... strings) {
+        protected ArrayList<StickerPack> doInBackground(String... strings) {
             return Database.getInstance(MyApplication.getAppContext()).addNewEmptyPack(strings[0]);
         }
 
         @Override
-        protected void onPostExecute(List<StickerPack> packs) {
+        protected void onPostExecute(ArrayList<StickerPack> packs) {
             stickerPackListAdapter.update(packs);
         }
     }

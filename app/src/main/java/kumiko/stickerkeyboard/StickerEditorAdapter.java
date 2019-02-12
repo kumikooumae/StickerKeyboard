@@ -1,18 +1,15 @@
 package kumiko.stickerkeyboard;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.List;
-
+import java.util.ArrayList;
 import kumiko.stickerkeyboard.data.Sticker;
 
 class StickerEditorAdapter extends StickerBaseAdapter {
 
-    StickerEditorAdapter(List<Sticker> stickers) {
+    StickerEditorAdapter(ArrayList<Sticker> stickers) {
         super(stickers);
     }
 

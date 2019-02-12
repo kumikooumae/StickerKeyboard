@@ -2,23 +2,18 @@ package kumiko.stickerkeyboard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-
-import java.util.List;
-
+import java.util.ArrayList;
 import kumiko.stickerkeyboard.data.Sticker;
 
 abstract class StickerBaseAdapter extends RecyclerView.Adapter {
 
-    List<Sticker> stickers;
+    ArrayList<Sticker> stickers;
 
     static class StickerViewHolder extends RecyclerView.ViewHolder {
         ImageView sticker;
@@ -29,7 +24,7 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
         }
     }
 
-    StickerBaseAdapter(List<Sticker> stickers) {
+    StickerBaseAdapter(ArrayList<Sticker> stickers) {
         this.stickers = stickers;
     }
 
@@ -49,7 +44,7 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
 
     abstract Sticker getSticker(int onBindPosition);
 
-    void update(List<Sticker> stickers) {
+    void update(ArrayList<Sticker> stickers) {
         this.stickers = stickers;
         notifyDataSetChanged();
     }

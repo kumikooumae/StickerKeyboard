@@ -3,10 +3,8 @@ package kumiko.stickerkeyboard;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import java.io.File;
-import java.util.List;
-
+import java.util.ArrayList;
 import kumiko.stickerkeyboard.data.Sticker;
 
 class FileHelper {
@@ -23,7 +21,7 @@ class FileHelper {
         }
     }
 
-    static void deleteStickers(@NonNull Context context, @NonNull List<Sticker> stickers) {
+    static void deleteStickers(@NonNull Context context, @NonNull ArrayList<Sticker> stickers) {
         for (Sticker sticker: stickers) {
             deleteSticker(context, sticker);
         }

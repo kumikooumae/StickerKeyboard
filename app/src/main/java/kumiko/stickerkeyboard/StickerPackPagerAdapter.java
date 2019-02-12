@@ -4,14 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+import java.util.ArrayList;
 
-import java.util.List;
 
 class StickerPackPagerAdapter extends PagerAdapter {
 
-    private List<PackView> packViews;
+    private ArrayList<PackView> packViews;
 
-    StickerPackPagerAdapter(List<PackView> packViews) {
+    StickerPackPagerAdapter(ArrayList<PackView> packViews) {
         this.packViews = packViews;
     }
 
@@ -28,7 +28,7 @@ class StickerPackPagerAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
-    private void update(List<PackView> packViews) {
+    private void update(ArrayList<PackView> packViews) {
         this.packViews = packViews;
         notifyDataSetChanged();
     }

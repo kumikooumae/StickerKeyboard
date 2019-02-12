@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import java.util.List;
-
+import java.util.ArrayList;
 import kumiko.stickerkeyboard.data.Sticker;
 
 class StickerKeyboardAdapter extends StickerBaseAdapter {
@@ -28,7 +26,7 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
         }
     }
 
-    StickerKeyboardAdapter(List<Sticker> stickers, String packName) {
+    StickerKeyboardAdapter(ArrayList<Sticker> stickers, String packName) {
         super(stickers);
         this.packName = packName;
     }
