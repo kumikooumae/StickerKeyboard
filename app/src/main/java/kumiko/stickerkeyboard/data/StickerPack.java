@@ -1,7 +1,6 @@
 package kumiko.stickerkeyboard.data;
 
-import java.util.List;
-
+import java.util.ArrayList;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Fts4;
@@ -28,7 +27,7 @@ public class StickerPack {
     public String name;
 
     @Ignore
-    public List<Sticker> stickers;
+    public ArrayList<Sticker> stickers;
 
     public StickerPack(String name) {
         this.name = name;
@@ -42,11 +41,11 @@ public class StickerPack {
         return name;
     }
 
-    public List<Sticker> getStickers() {
+    public ArrayList<Sticker> getStickers() {
         return stickers;
     }
 
-    public void setStickers(List<Sticker> stickers) {
+    public void setStickers(ArrayList<Sticker> stickers) {
         this.stickers = stickers;
     }
 }

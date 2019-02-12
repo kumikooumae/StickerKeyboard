@@ -1,5 +1,8 @@
 package kumiko.stickerkeyboard.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -17,7 +20,7 @@ import static androidx.room.ForeignKey.CASCADE;
             onDelete = CASCADE,
             onUpdate = CASCADE
         ))
-public class Sticker {
+public class Sticker implements Parcelable {
 
     static final String TABLE_NAME = "stickers";
 
@@ -77,4 +80,38 @@ public class Sticker {
     public Type getType() {
         return type;
     }
+
+    private Sticker(Parcel in) {
+        id = in.readInt();
+        fileName = in.readString();
+        packId = in.readInt();
+        position = in.readInt();
+        type = (Type) in.readSerializable();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(id);
+        out.writeString(fileName);
+        out.writeInt(packId);
+        out.writeInt(position);
+        out.writeSerializable(type);
+    }
+
+    public static final Parcelable.Creator<Sticker> CREATOR = new Parcelable.Creator<Sticker>() {
+        @Override
+        public Sticker createFromParcel(Parcel in) {
+            return new Sticker(in);
+        }
+
+        @Override
+        public Sticker[] newArray(int size) {
+            return new Sticker[size];
+        }
+    };
 }

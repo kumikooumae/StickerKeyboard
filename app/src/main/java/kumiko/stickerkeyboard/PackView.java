@@ -2,8 +2,10 @@ package kumiko.stickerkeyboard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 
 public class PackView extends RecyclerView {
 
@@ -14,6 +16,20 @@ public class PackView extends RecyclerView {
     public PackView(@NonNull Context context) {
         super(context);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        init(context);
+    }
+
+    public PackView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public PackView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
+    }
+
+    private void init(Context context) {
         stickerSize = getResources().getDimensionPixelSize(R.dimen.sticker_size);
 
         manager = new GridLayoutManager(context, 1);
