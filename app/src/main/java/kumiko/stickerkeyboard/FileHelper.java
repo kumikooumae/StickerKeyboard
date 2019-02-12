@@ -1,6 +1,7 @@
 package kumiko.stickerkeyboard;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import java.io.File;
@@ -12,6 +13,10 @@ class FileHelper {
 
     static File getStickerFile(@NonNull Context context, @NonNull Sticker sticker) {
         return new File(new File(context.getFilesDir(), Integer.toString(sticker.getPackId())), sticker.getFileName());
+    }
+
+    static void saveStickerFrom(Uri uri, int packId) {
+
     }
 
     static void deleteSticker(@NonNull Context context, @NonNull Sticker sticker) {

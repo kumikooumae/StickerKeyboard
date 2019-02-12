@@ -45,14 +45,12 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
     public PackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_pack_card, parent, false);
         final PackViewHolder holder = new PackViewHolder(view);
-        final StickerPack pack = packs.get(holder.getAdapterPosition());
         final Context context = view.getContext();
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PackActivity.class);
-                intent.putExtra(context.getResources().getString(R.string.pack_name_extra_key), pack.getName());
-                intent.putParcelableArrayListExtra(context.getResources().getString(R.string.stickers_extra_key), pack.getStickers());
+                intent.putExtra(context.getResources().getString(R.string.pack_extra_key), packs.get(holder.getAdapterPosition()));
                 context.startActivity(intent);
             }
         });
