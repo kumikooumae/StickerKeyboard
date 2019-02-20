@@ -1,6 +1,7 @@
 package kumiko.stickerkeyboard;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,6 +38,7 @@ public class PackActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType(MIME_IMAGE);
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 startActivityForResult(intent, DOC_REQUEST_CODE);
             }
         });
@@ -49,7 +51,14 @@ public class PackActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == DOC_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            FileHelper.saveStickerFrom(data.getData(), pack.getId());
+            if (data.getClipData() != null) {
+                ClipData clipData = data.getClipData();
+                for (int i = 0; i < clipData.getItemCount(); i++) {
+                    FileHelper.saveStickerFrom(clipData.getItemAt(i).getUri(), pack.getId());
+                }
+            } else {
+                FileHelper.saveStickerFrom(data.getData(), pack.getId());
+            }
         }
     }
 }
