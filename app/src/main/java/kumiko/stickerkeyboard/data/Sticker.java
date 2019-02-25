@@ -8,6 +8,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Fts4;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
 
 import static androidx.room.ForeignKey.CASCADE;
 
@@ -114,4 +115,14 @@ public class Sticker implements Parcelable {
             return new Sticker[size];
         }
     };
+
+    @TypeConverter
+    public static Type fromOrdinal(int ordinal) {
+        return Type.values()[ordinal];
+    }
+
+    @TypeConverter
+    public static int ordinalFromType(Type type) {
+        return type.ordinal();
+    }
 }
