@@ -9,10 +9,29 @@ import java.util.ArrayList;
 import kumiko.stickerkeyboard.data.Sticker;
 
 class FileHelper {
+
+    static final String MIME_IMAGE = "image/*";
+
+    static final String MIME_JPEG = "image/jpeg";
+
+    static final String MIME_PNG = "image/png";
+
+    static final String MIME_GIF = "image/gif";
+
+    static final String MIME_WEBP = "image/webp";
+
+    static final String EXT_JPEG = ".jpg";
+
+    static final String EXT_PNG = ".png";
+
+    static final String EXT_GIF = ".gif";
+
+    static final String EXT_WEBP = ".webp";
+
     private static final String TAG = "FileHelper";
 
     static File getStickerFile(@NonNull Context context, @NonNull Sticker sticker) {
-        return new File(new File(context.getFilesDir(), Integer.toString(sticker.getPackId())), sticker.getFileName());
+        return new File(new File(context.getFilesDir(), Integer.toString(sticker.getPackId())), getStickerFileName(sticker));
     }
 
     static void saveStickerFrom(Uri uri, int packId) {
@@ -20,9 +39,9 @@ class FileHelper {
     }
 
     static void deleteSticker(@NonNull Context context, @NonNull Sticker sticker) {
-        File file = new File(new File(context.getFilesDir(), Integer.toString(sticker.getPackId())), sticker.getFileName());
+        File file = new File(new File(context.getFilesDir(), Integer.toString(sticker.getPackId())), getStickerFileName(sticker));
         if (!file.delete()) {
-            Log.d(TAG, "deleteSticker: Failed to delete " + sticker.getFileName());
+            Log.d(TAG, "deleteSticker: Failed to delete " + getStickerFileName(sticker));
         }
     }
 
@@ -30,5 +49,27 @@ class FileHelper {
         for (Sticker sticker: stickers) {
             deleteSticker(context, sticker);
         }
+    }
+
+    private static String getStickerFileName(@NonNull Sticker sticker) {
+        String ext;
+        switch (sticker.getType()) {
+            case JPEG:
+                ext = EXT_JPEG;
+                break;
+            case PNG:
+                ext = EXT_PNG;
+                break;
+            case GIF:
+                ext = EXT_GIF;
+                break;
+            case WEBP:
+                ext = EXT_WEBP;
+                break;
+            default:
+                ext = "";
+                break;
+        }
+        return Integer.toString(sticker.getId()) + ext;
     }
 }

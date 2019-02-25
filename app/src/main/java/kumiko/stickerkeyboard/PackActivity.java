@@ -14,8 +14,6 @@ import kumiko.stickerkeyboard.data.StickerPack;
 
 public class PackActivity extends AppCompatActivity {
 
-    private static final String MIME_IMAGE = "image/*";
-
     private static final int DOC_REQUEST_CODE = 1;
 
     private StickerPack pack;
@@ -37,7 +35,7 @@ public class PackActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType(MIME_IMAGE);
+                intent.setType(FileHelper.MIME_IMAGE);
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 startActivityForResult(intent, DOC_REQUEST_CODE);
             }

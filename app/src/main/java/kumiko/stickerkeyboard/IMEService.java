@@ -26,14 +26,6 @@ public class IMEService extends InputMethodService {
 
     private StickerKeyboardView stickerKeyboardView;
 
-    private static final String MIME_JPEG = "image/jpeg";
-
-    private static final String MIME_PNG = "image/png";
-
-    private static final String MIME_GIF = "image/gif";
-
-    private static final String MIME_WEBP = "image/webp";
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -50,16 +42,16 @@ public class IMEService extends InputMethodService {
         File stickerFile = FileHelper.getStickerFile(this, sticker);
         switch (sticker.getType()) {
             case JPEG:
-                doCommitContent(stickerFile, MIME_JPEG);
+                doCommitContent(stickerFile, FileHelper.MIME_JPEG);
                 break;
             case PNG:
-                doCommitContent(stickerFile, MIME_PNG);
+                doCommitContent(stickerFile, FileHelper.MIME_PNG);
                 break;
             case GIF:
-                doCommitContent(stickerFile, MIME_GIF);
+                doCommitContent(stickerFile, FileHelper.MIME_GIF);
                 break;
             case WEBP:
-                doCommitContent(stickerFile, MIME_WEBP);
+                doCommitContent(stickerFile, FileHelper.MIME_WEBP);
                 break;
         }
         stickerKeyboardView.refreshHistory(sticker);
