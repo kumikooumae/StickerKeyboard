@@ -25,7 +25,7 @@ public class StickerKeyboardView extends FrameLayout {
 
     private LayoutInflater inflater;
 
-    private StickerKeyboardAdapter historyAdapter;
+    private static StickerKeyboardAdapter historyAdapter;
 
     private GetStickerPacksTask getStickerPacksTask;
 
@@ -43,7 +43,6 @@ public class StickerKeyboardView extends FrameLayout {
         getStickerPacksTask.execute();
 
         refreshHistoryTask = new RefreshHistoryTask();
-        refreshHistoryTask.setListener(getOnRefreshedHistoryListener());
 
         ImageButton imeSwitcher = findViewById(R.id.ime_switcher);
         final InputMethodManager inputMethodManager = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -144,8 +143,6 @@ public class StickerKeyboardView extends FrameLayout {
 
         private Database db;
 
-        private Listener listener;
-
         RefreshHistoryTask() {
             super();
             db = Database.getInstance(MyApplication.getAppContext());
@@ -159,35 +156,15 @@ public class StickerKeyboardView extends FrameLayout {
 
         @Override
         protected void onPostExecute(ArrayList<Sticker> historyStickers) {
-            if (listener != null) {
-                listener.onFinish(historyStickers);
+            if (historyAdapter != null) {
+                historyAdapter.update(historyStickers);
             }
         }
-
-        void setListener(Listener listener) {
-            this.listener = listener;
-        }
-
-        interface Listener {
-            void onFinish(ArrayList<Sticker> historyStickers);
-        }
-    }
-
-    private RefreshHistoryTask.Listener getOnRefreshedHistoryListener() {
-        return new RefreshHistoryTask.Listener() {
-            @Override
-            public void onFinish(ArrayList<Sticker> historyStickers) {
-                if (historyAdapter != null) {
-                    historyAdapter.update(historyStickers);
-                }
-            }
-        };
     }
 
     @Override
     protected void onDetachedFromWindow() {
         getStickerPacksTask.setListener(null);
-        refreshHistoryTask.setListener(null);
         super.onDetachedFromWindow();
     }
 }
