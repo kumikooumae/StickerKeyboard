@@ -1,7 +1,6 @@
 package kumiko.stickerkeyboard;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -45,13 +44,10 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
     public PackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_pack_card, parent, false);
         final PackViewHolder holder = new PackViewHolder(view);
-        final Context context = view.getContext();
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, PackActivity.class);
-                intent.putExtra(context.getResources().getString(R.string.pack_extra_key), packs.get(holder.getAdapterPosition()));
-                context.startActivity(intent);
+                PackActivity.startPackActivity(view.getContext(), packs.get(holder.getAdapterPosition()));
             }
         });
         return holder;

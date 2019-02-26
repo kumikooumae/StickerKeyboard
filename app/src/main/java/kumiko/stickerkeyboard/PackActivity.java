@@ -2,6 +2,7 @@ package kumiko.stickerkeyboard;
 
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +18,12 @@ public class PackActivity extends AppCompatActivity {
     private static final int DOC_REQUEST_CODE = 1;
 
     private StickerPack pack;
+
+    static void startPackActivity(Context context, StickerPack pack) {
+        Intent intent = new Intent(context, PackActivity.class);
+        intent.putExtra(context.getResources().getString(R.string.pack_extra_key), pack);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
