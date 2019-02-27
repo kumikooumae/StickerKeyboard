@@ -15,13 +15,15 @@ import kumiko.stickerkeyboard.data.StickerPack;
 
 public class PackActivity extends AppCompatActivity {
 
+    private static final String EXTRA_PACK = "kumiko.stickerkeyboard.extra.PACK";
+
     private static final int DOC_REQUEST_CODE = 1;
 
     private StickerPack pack;
 
     static void startPackActivity(Context context, StickerPack pack) {
         Intent intent = new Intent(context, PackActivity.class);
-        intent.putExtra(context.getResources().getString(R.string.pack_extra_key), pack);
+        intent.putExtra(EXTRA_PACK, pack);
         context.startActivity(intent);
     }
 
@@ -32,7 +34,7 @@ public class PackActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pack = getIntent().getParcelableExtra(getResources().getString(R.string.pack_extra_key));
+        pack = getIntent().getParcelableExtra(EXTRA_PACK);
 
         PackView packView = findViewById(R.id.pack_view);
         packView.setAdapter(new StickerEditorAdapter(pack.getStickers()));

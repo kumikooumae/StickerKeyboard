@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">StickerKeyboard</string>
-    <string name="ime_service_label">IME Service</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_pack">PackActivity</string>
+    <string name="label_ime_service">IME Service</string>
+
     <string name="language_switch_key">Switch language</string>
     <string name="history_pack_name">History</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="add_pack">Add pack</string>
     <string name="pack_name">Pack name</string>
-    <string name="title_activity_pack">PackActivity</string>
-    <string name="pack_extra_key">pack</string>
 </resources>

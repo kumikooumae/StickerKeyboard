@@ -27,7 +27,7 @@
 
         <service
             android:name=".IMEService"
-            android:label="@string/ime_service_label"
+            android:label="@string/label_ime_service"
             android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
