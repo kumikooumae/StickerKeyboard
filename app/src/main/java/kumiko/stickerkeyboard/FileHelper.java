@@ -66,10 +66,25 @@ class FileHelper {
             case WEBP:
                 ext = EXT_WEBP;
                 break;
-            default:
+            default:    // case UNKNOWN
                 ext = "";
                 break;
         }
         return Integer.toString(sticker.getId()) + ext;
+    }
+
+    static String getMime(Sticker.Type type) {
+        switch (type) {
+            case JPEG:
+                return MIME_JPEG;
+            case PNG:
+                return MIME_PNG;
+            case GIF:
+                return MIME_GIF;
+            case WEBP:
+                return MIME_WEBP;
+            default:    // case UNKNOWN
+                return "";
+        }
     }
 }

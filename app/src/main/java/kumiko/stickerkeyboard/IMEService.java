@@ -40,20 +40,7 @@ public class IMEService extends InputMethodService {
 
     void sendSticker(Sticker sticker) {
         File stickerFile = FileHelper.getStickerFile(this, sticker);
-        switch (sticker.getType()) {
-            case JPEG:
-                doCommitContent(stickerFile, FileHelper.MIME_JPEG);
-                break;
-            case PNG:
-                doCommitContent(stickerFile, FileHelper.MIME_PNG);
-                break;
-            case GIF:
-                doCommitContent(stickerFile, FileHelper.MIME_GIF);
-                break;
-            case WEBP:
-                doCommitContent(stickerFile, FileHelper.MIME_WEBP);
-                break;
-        }
+        doCommitContent(stickerFile, FileHelper.getMime(sticker.getType()));
         stickerKeyboardView.refreshHistory(sticker);
     }
 
