@@ -4,13 +4,19 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
 import java.util.ArrayList;
+
+import kumiko.stickerkeyboard.data.Database;
+import kumiko.stickerkeyboard.data.Sticker;
 import kumiko.stickerkeyboard.data.StickerPack;
 
 public class PackActivity extends AppCompatActivity {
@@ -19,7 +25,9 @@ public class PackActivity extends AppCompatActivity {
 
     private static final int DOC_REQUEST_CODE = 1;
 
-    private StickerPack pack;
+    private static StickerPack pack;
+
+    private static StickerEditorAdapter adapter;
 
     static void startPackActivity(Context context, StickerPack pack) {
         Intent intent = new Intent(context, PackActivity.class);
@@ -37,7 +45,8 @@ public class PackActivity extends AppCompatActivity {
         pack = getIntent().getParcelableExtra(EXTRA_PACK);
 
         PackView packView = findViewById(R.id.pack_view);
-        packView.setAdapter(new StickerEditorAdapter(pack.getStickers()));
+        adapter = new StickerEditorAdapter(pack.getStickers());
+        packView.setAdapter(adapter);
         FloatingActionButton addStickerFab = findViewById(R.id.addStickerFab);
         addStickerFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,14 +67,43 @@ public class PackActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == DOC_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<Uri> uris = new ArrayList<>();
             if (data.getClipData() != null) {
                 ClipData clipData = data.getClipData();
                 for (int i = 0; i < clipData.getItemCount(); i++) {
-                    FileHelper.saveStickerFrom(clipData.getItemAt(i).getUri(), pack.getId());
+                    uris.add(clipData.getItemAt(i).getUri());
                 }
             } else {
-                FileHelper.saveStickerFrom(data.getData(), pack.getId());
+                uris.add(data.getData());
             }
+            new SaveStickersTask().execute(uris.toArray(new Uri[0]));
+        }
+
+    }
+
+    private static class SaveStickersTask extends AsyncTask<Uri, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            //TODO: show circular / progress bar
+        }
+
+        @Override
+        protected Void doInBackground(Uri... uris) {
+            Context context = MyApplication.getAppContext();
+            Database db = Database.getInstance(context);
+            for (Uri uri: uris) {
+                String mimeType = context.getContentResolver().getType(uri);
+                Sticker sticker = db.addNewSticker(pack.getId(), FileHelper.getStickerType(mimeType));
+                FileHelper.saveStickerFrom(uri, pack.getId());
+                pack.getStickers().add(sticker);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            // TODO: remove progress
+            adapter.update(pack.getStickers());
         }
     }
 }

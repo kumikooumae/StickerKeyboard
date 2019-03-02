@@ -34,8 +34,14 @@ public class FileHelper {
         return new File(new File(context.getFilesDir(), Integer.toString(sticker.getPackId())), getStickerFileName(sticker));
     }
 
-    static void saveStickerFrom(Uri uri, int packId) {
-
+    /**
+     * Save sticker from uri. Could be time consuming.
+     *
+     * @param uri Sticker Uri
+     * @param packId PackId
+     */
+    static synchronized void saveStickerFrom(Uri uri, int packId) {
+        // TODO: 2019/2/28 stickerId.ext -> save to disk
     }
 
     /**
