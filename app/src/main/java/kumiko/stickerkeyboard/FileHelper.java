@@ -45,12 +45,6 @@ class FileHelper {
         }
     }
 
-    static void deleteStickers(@NonNull Context context, @NonNull ArrayList<Sticker> stickers) {
-        for (Sticker sticker: stickers) {
-            deleteSticker(context, sticker);
-        }
-    }
-
     private static String getStickerFileName(@NonNull Sticker sticker) {
         String ext;
         switch (sticker.getType()) {
