@@ -55,10 +55,9 @@ public class Sticker implements Parcelable {
     @ColumnInfo(name = TYPE)
     public Type type;
 
-    public Sticker(String fileName, int packId, int position, Type type) {
+    public Sticker(String fileName, int packId, Type type) {
         this.fileName = fileName;
         this.packId = packId;
-        this.position = position;
         this.type = type;
     }
 
@@ -76,6 +75,10 @@ public class Sticker implements Parcelable {
 
     public int getPosition() {
         return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public Type getType() {
