@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import kumiko.stickerkeyboard.data.Sticker;
 
-class FileHelper {
+public class FileHelper {
 
     static final String MIME_IMAGE = "image/*";
 
@@ -67,7 +67,7 @@ class FileHelper {
         return Integer.toString(sticker.getId()) + ext;
     }
 
-    static String getMime(Sticker.Type type) {
+    static String getMime(@NonNull Sticker.Type type) {
         switch (type) {
             case JPEG:
                 return MIME_JPEG;
@@ -82,7 +82,7 @@ class FileHelper {
         }
     }
 
-    static Sticker.Type getStickerType(String mimeType) {
+    public static Sticker.Type getStickerType(String mimeType) {
         if (MIME_JPEG.equals(mimeType)) {
             return Sticker.Type.JPEG;
         } else if (MIME_PNG.equals(mimeType)) {
