@@ -87,4 +87,18 @@ class FileHelper {
                 return "";
         }
     }
+
+    static Sticker.Type getStickerType(String mimeType) {
+        if (MIME_JPEG.equals(mimeType)) {
+            return Sticker.Type.JPEG;
+        } else if (MIME_PNG.equals(mimeType)) {
+            return Sticker.Type.PNG;
+        } else if (MIME_GIF.equals(mimeType)) {
+            return Sticker.Type.GIF;
+        } else if (MIME_WEBP.equals(mimeType)) {
+            return Sticker.Type.WEBP;
+        } else {
+            return Sticker.Type.UNKNOWN;
+        }
+    }
 }
