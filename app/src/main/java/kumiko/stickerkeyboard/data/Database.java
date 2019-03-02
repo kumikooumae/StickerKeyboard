@@ -4,9 +4,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
+
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+@androidx.room.Database(entities = {Sticker.class, StickerPack.class, History.class}, version = 1)
 public abstract class Database extends RoomDatabase {
 
     public abstract StickerDao stickerDao();
@@ -79,5 +81,14 @@ public abstract class Database extends RoomDatabase {
     public ArrayList<StickerPack> addNewEmptyPack(String name) {
         stickerPackDao().insertStickerPacks(new StickerPack(name));
         return getAllStickerPacks();
+    }
+
+    public Sticker addNewSticker(int packId, Sticker.Type type) {
+        // fileName is unused
+        Sticker sticker = new Sticker("", packId, type);
+        int stickerId = (int) stickerDao().insertStickers(sticker);
+        sticker.setPosition(stickerId);
+        stickerDao().updateStickers(sticker);
+        return sticker;
     }
 }
