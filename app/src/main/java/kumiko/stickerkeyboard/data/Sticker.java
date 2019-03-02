@@ -36,7 +36,7 @@ public class Sticker implements Parcelable {
     private static final String TYPE = "type";
 
     public enum Type {
-        JPEG, PNG, GIF, WEBP
+        JPEG, PNG, GIF, WEBP, UNKNOWN
     }
 
     @PrimaryKey(autoGenerate = true)
