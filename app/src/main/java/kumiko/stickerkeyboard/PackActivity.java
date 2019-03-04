@@ -94,7 +94,7 @@ public class PackActivity extends AppCompatActivity {
             for (Uri uri: uris) {
                 String mimeType = context.getContentResolver().getType(uri);
                 Sticker sticker = db.addNewSticker(pack.getId(), FileHelper.getStickerType(mimeType));
-                FileHelper.saveStickerFrom(uri, pack.getId());
+                FileHelper.saveStickerFrom(uri, sticker);
                 pack.getStickers().add(sticker);
             }
             return null;

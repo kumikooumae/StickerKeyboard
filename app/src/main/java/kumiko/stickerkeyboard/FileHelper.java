@@ -4,8 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import kumiko.stickerkeyboard.data.Sticker;
 
 public class FileHelper {
@@ -38,10 +43,40 @@ public class FileHelper {
      * Save sticker from uri. Could be time consuming.
      *
      * @param uri Sticker Uri
-     * @param packId PackId
+     * @param sticker Sticker object
      */
-    static synchronized void saveStickerFrom(Uri uri, int packId) {
+    static synchronized void saveStickerFrom(Uri uri, Sticker sticker) {
         // TODO: 2019/2/28 stickerId.ext -> save to disk
+        Context context = MyApplication.getAppContext();
+        BufferedInputStream bufferedInputStream = null;
+        BufferedOutputStream bufferedOutputStream = null;
+        File destFile = getStickerFile(context, sticker);
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            if (inputStream != null) {
+                bufferedInputStream = new BufferedInputStream(inputStream);
+                bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(destFile, false));
+                byte [] b = new byte[1024];
+                while (bufferedInputStream.read(b) != -1) {
+                    bufferedOutputStream.write(b);
+                }
+            } else {
+                Log.d(TAG, "saveStickerFrom: Null input stream: " + uri.toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bufferedInputStream != null) {
+                    bufferedInputStream.close();
+                }
+                if (bufferedOutputStream != null) {
+                    bufferedOutputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
