@@ -76,7 +76,7 @@ public class PackActivity extends AppCompatActivity {
             } else {
                 uris.add(data.getData());
             }
-            new SaveStickersTask().execute(uris.toArray(new Uri[0]));
+            new SaveStickersTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, uris.toArray(new Uri[0]));
         }
 
     }
