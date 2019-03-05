@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish(List<StickerPack> packs) {
                 RecyclerView packList = findViewById(R.id.pack_list);
+                packList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                 stickerPackListAdapter = new StickerPackListAdapter(packs);
                 packList.setAdapter(stickerPackListAdapter);
             }
