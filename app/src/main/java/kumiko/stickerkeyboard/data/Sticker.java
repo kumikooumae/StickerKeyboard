@@ -6,26 +6,26 @@ import android.os.Parcelable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.Fts4;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
 import static androidx.room.ForeignKey.CASCADE;
 
-@Fts4
 @Entity(tableName = Sticker.TABLE_NAME,
         foreignKeys = @ForeignKey(
             entity = StickerPack.class,
-            parentColumns = StickerPack.ROWID,
+            parentColumns = StickerPack.ID,
             childColumns = Sticker.PACK_ID,
             onDelete = CASCADE,
-            onUpdate = CASCADE
-        ))
+            onUpdate = CASCADE),
+        indices = {@Index(Sticker.PACK_ID)})
 public class Sticker implements Parcelable {
 
     static final String TABLE_NAME = "stickers";
 
-    static final String ROWID = "rowid";
+    static final String ID = "id";
 
     private static final String FILE_NAME = "file_name";
 
@@ -40,7 +40,7 @@ public class Sticker implements Parcelable {
     }
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = ROWID)
+    @ColumnInfo(name = ID)
     public int id;
 
     @ColumnInfo(name = FILE_NAME)
@@ -53,6 +53,7 @@ public class Sticker implements Parcelable {
     public int position;
 
     @ColumnInfo(name = TYPE)
+    @TypeConverters(Sticker.class)
     public Type type;
 
     public Sticker(String fileName, int packId, Type type) {

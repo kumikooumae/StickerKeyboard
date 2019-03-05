@@ -11,13 +11,13 @@ import androidx.room.Update;
 @Dao
 public interface StickerPackDao {
     @Insert
-    void insertStickerPacks(StickerPack... stickerPacks);
+    void insertStickerPack(StickerPack stickerPack);
 
     @Update
-    void updateStickerPacks(StickerPack... stickerPacks);
+    void updateStickerPack(StickerPack stickerPack);
 
     @Delete
-    void deleteStickerPacks(StickerPack... stickerPacks);
+    void deleteStickerPack(StickerPack stickerPack);
 
     @Query("SELECT * FROM " + StickerPack.TABLE_NAME)
     List<StickerPack> getAllStickerPacks();

@@ -11,13 +11,13 @@ import androidx.room.Update;
 @Dao
 public interface HistoryDao {
     @Insert
-    void insertHistories(History... histories);
+    void insertHistory(History history);
 
     @Update
-    void updateHistories(History... histories);
+    void updateHistory(History history);
 
     @Delete
-    void deleteHistories(History... histories);
+    void deleteHistory(History history);
 
     @Query("SELECT * FROM " + History.TABLE_NAME)
     List<History> getHistories();

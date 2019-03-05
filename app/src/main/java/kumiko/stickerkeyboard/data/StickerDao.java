@@ -11,17 +11,17 @@ import androidx.room.Update;
 @Dao
 public interface StickerDao {
     @Insert
-    long insertStickers(Sticker... stickers);
+    long insertSticker(Sticker sticker);
 
     @Update
-    void updateStickers(Sticker... stickers);
+    void updateSticker(Sticker sticker);
 
     @Delete
-    void deleteStickers(Sticker... stickers);
+    void deleteSticker(Sticker sticker);
 
     @Query("SELECT * FROM " + Sticker.TABLE_NAME + " WHERE " + Sticker.PACK_ID + " = :packId")
     List<Sticker> getStickers(int packId);
 
-    @Query("SELECT * FROM " + Sticker.TABLE_NAME + " WHERE " + Sticker.ROWID + " = :stickerId")
+    @Query("SELECT * FROM " + Sticker.TABLE_NAME + " WHERE " + Sticker.ID + " = :stickerId")
     Sticker getSticker(int stickerId);
 }

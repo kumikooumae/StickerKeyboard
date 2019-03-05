@@ -71,26 +71,26 @@ public abstract class Database extends RoomDatabase {
         History newHistory = new History(sticker.getId());
         histories.add(0, newHistory);
         historyStickers.add(0, sticker);
-        historyDao().insertHistories(newHistory);
+        historyDao().insertHistory(newHistory);
     }
 
     private void removeFromHistory(int position) {
         History removed = histories.remove(position);
         historyStickers.remove(position);
-        historyDao().deleteHistories(removed);
+        historyDao().deleteHistory(removed);
     }
 
     public List<StickerPack> addNewEmptyPack(String name) {
-        stickerPackDao().insertStickerPacks(new StickerPack(name));
+        stickerPackDao().insertStickerPack(new StickerPack(name));
         return getAllStickerPacks();
     }
 
     public Sticker addNewSticker(int packId, Sticker.Type type) {
         // fileName is unused
         Sticker sticker = new Sticker("", packId, type);
-        int stickerId = (int) stickerDao().insertStickers(sticker);
+        int stickerId = (int) stickerDao().insertSticker(sticker);
         sticker.setPosition(stickerId);
-        stickerDao().updateStickers(sticker);
+        stickerDao().updateSticker(sticker);
         return sticker;
     }
 }
