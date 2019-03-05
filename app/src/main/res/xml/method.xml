@@ -3,5 +3,5 @@
     <subtype
         android:imeSubtypeLocale="zh_CN"
         android:imeSubtypeMode="keyboard"
-        android:label="@string/ime_service_label"/>
+        android:label="@string/label_ime_service"/>
 </input-method>
