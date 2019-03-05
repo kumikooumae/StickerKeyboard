@@ -1,6 +1,6 @@
 package kumiko.stickerkeyboard.data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -20,5 +20,5 @@ public interface StickerPackDao {
     void deleteStickerPacks(StickerPack... stickerPacks);
 
     @Query("SELECT * FROM " + StickerPack.TABLE_NAME)
-    ArrayList<StickerPack> getAllStickerPacks();
+    List<StickerPack> getAllStickerPacks();
 }

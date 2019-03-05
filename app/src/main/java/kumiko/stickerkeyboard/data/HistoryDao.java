@@ -1,6 +1,6 @@
 package kumiko.stickerkeyboard.data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -20,5 +20,5 @@ public interface HistoryDao {
     void deleteHistories(History... histories);
 
     @Query("SELECT * FROM " + History.TABLE_NAME)
-    ArrayList<History> getHistories();
+    List<History> getHistories();
 }

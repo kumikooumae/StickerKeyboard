@@ -2,7 +2,9 @@ package kumiko.stickerkeyboard.data;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 
 import androidx.room.Room;
@@ -21,9 +23,9 @@ public abstract class Database extends RoomDatabase {
 
     private static final int MAX_HISTORIES = 50;
 
-    private ArrayList<History> histories;
+    private List<History> histories;
 
-    private ArrayList<Sticker> historyStickers;
+    private List<Sticker> historyStickers;
 
     public static synchronized Database getInstance(Context context) {
         if (instance == null) {
@@ -32,19 +34,19 @@ public abstract class Database extends RoomDatabase {
         return instance;
     }
 
-    public ArrayList<StickerPack> getAllStickerPacks() {
-        ArrayList<StickerPack> packs = stickerPackDao().getAllStickerPacks();
+    public List<StickerPack> getAllStickerPacks() {
+        List<StickerPack> packs = stickerPackDao().getAllStickerPacks();
         for (StickerPack pack: packs) {
             pack.stickers = getStickers(pack);
         }
         return packs;
     }
 
-    public ArrayList<Sticker> getStickers(@NonNull StickerPack pack) {
+    public List<Sticker> getStickers(@NonNull StickerPack pack) {
         return stickerDao().getStickers(pack.getId());
     }
 
-    public synchronized ArrayList<Sticker> getHistoryStickersReversed() {
+    public synchronized List<Sticker> getHistoryStickersReversed() {
         if (histories == null || historyStickers == null) {
             histories = historyDao().getHistories();
             Collections.reverse(histories);
@@ -78,7 +80,7 @@ public abstract class Database extends RoomDatabase {
         historyDao().deleteHistories(removed);
     }
 
-    public ArrayList<StickerPack> addNewEmptyPack(String name) {
+    public List<StickerPack> addNewEmptyPack(String name) {
         stickerPackDao().insertStickerPacks(new StickerPack(name));
         return getAllStickerPacks();
     }

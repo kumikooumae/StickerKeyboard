@@ -11,13 +11,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import java.util.ArrayList;
+import java.util.List;
 import kumiko.stickerkeyboard.data.Sticker;
 import kumiko.stickerkeyboard.data.StickerPack;
 
 class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter.PackViewHolder> {
 
-    private ArrayList<StickerPack> packs;
+    private List<StickerPack> packs;
 
     static class PackViewHolder extends RecyclerView.ViewHolder {
 
@@ -35,7 +35,7 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
         }
     }
 
-    StickerPackListAdapter(ArrayList<StickerPack> packs) {
+    StickerPackListAdapter(List<StickerPack> packs) {
         this.packs = packs;
     }
 
@@ -57,7 +57,7 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
     public void onBindViewHolder(@NonNull PackViewHolder holder, int position) {
         StickerPack pack = packs.get(position);
         Context context = holder.cover.getContext();
-        ArrayList<Sticker> stickers = pack.getStickers();
+        List<Sticker> stickers = pack.getStickers();
         if (!stickers.isEmpty()) {
             Glide.with(context)
                     .load(FileHelper.getStickerFile(context, pack.getStickers().get(0)))
@@ -73,7 +73,7 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
         return packs.size();
     }
 
-    void update(ArrayList<StickerPack> packs) {
+    void update(List<StickerPack> packs) {
         this.packs = packs;
         notifyDataSetChanged();
     }

@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.Sticker;
@@ -67,7 +68,7 @@ public class PackActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == DOC_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<Uri> uris = new ArrayList<>();
+            List<Uri> uris = new ArrayList<>();
             if (data.getClipData() != null) {
                 ClipData clipData = data.getClipData();
                 for (int i = 0; i < clipData.getItemCount(); i++) {

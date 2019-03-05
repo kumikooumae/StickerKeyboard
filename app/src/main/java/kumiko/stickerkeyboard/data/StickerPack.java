@@ -3,7 +3,7 @@ package kumiko.stickerkeyboard.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
+import java.util.List;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Fts4;
@@ -30,7 +30,7 @@ public class StickerPack implements Parcelable {
     public String name;
 
     @Ignore
-    public ArrayList<Sticker> stickers;
+    public List<Sticker> stickers;
 
     public StickerPack(String name) {
         this.name = name;
@@ -74,11 +74,11 @@ public class StickerPack implements Parcelable {
         return name;
     }
 
-    public ArrayList<Sticker> getStickers() {
+    public List<Sticker> getStickers() {
         return stickers;
     }
 
-    public void setStickers(ArrayList<Sticker> stickers) {
+    public void setStickers(List<Sticker> stickers) {
         this.stickers = stickers;
     }
 }
