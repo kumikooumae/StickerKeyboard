@@ -44,7 +44,7 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
                 holder.sticker.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        service.sendSticker(stickers.get(holder.getAdapterPosition()));
+                        service.sendSticker(stickers.get(holder.getAdapterPosition() - 1));
                     }
                 });
                 holder.sticker.setOnLongClickListener(new View.OnLongClickListener() {
