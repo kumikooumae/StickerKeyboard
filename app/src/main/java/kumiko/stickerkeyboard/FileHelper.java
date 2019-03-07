@@ -33,10 +33,12 @@ public class FileHelper {
 
     static final String EXT_WEBP = ".webp";
 
+    private static final String STICKER_DIR = "stickers";
+
     private static final String TAG = "FileHelper";
 
     static File getStickerFile(@NonNull Context context, @NonNull Sticker sticker) {
-        return new File(new File(context.getFilesDir(), Integer.toString(sticker.getPackId())), getStickerFileName(sticker));
+        return new File(new File(new File(context.getFilesDir(), STICKER_DIR), Integer.toString(sticker.getPackId())), getStickerFileName(sticker));
     }
 
     /**
