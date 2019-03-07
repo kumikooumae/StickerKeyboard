@@ -9,6 +9,8 @@ import java.util.Collections;
 
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SimpleSQLiteQuery;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @androidx.room.Database(entities = {Sticker.class, StickerPack.class, History.class}, version = 1)
 public abstract class Database extends RoomDatabase {
@@ -19,7 +21,9 @@ public abstract class Database extends RoomDatabase {
 
     public abstract HistoryDao historyDao();
 
-    public static Database instance;
+    private static Database instance;
+
+    private SupportSQLiteDatabase sqldb;
 
     private static final int MAX_HISTORIES = 50;
 
@@ -30,6 +34,7 @@ public abstract class Database extends RoomDatabase {
     public static synchronized Database getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(), Database.class, "sticker.db").build();
+            instance.sqldb = instance.getOpenHelper().getWritableDatabase();
         }
         return instance;
     }
@@ -87,10 +92,14 @@ public abstract class Database extends RoomDatabase {
 
     public Sticker addNewSticker(int packId, Sticker.Type type) {
         // fileName is unused
-        Sticker sticker = new Sticker("", packId, type);
-        int stickerId = (int) stickerDao().insertSticker(sticker);
-        sticker.setPosition(stickerId);
-        stickerDao().updateSticker(sticker);
-        return sticker;
+        sqldb.execSQL("INSERT INTO " + Sticker.TABLE_NAME
+                + "(" + Sticker.FILE_NAME + "," + Sticker.PACK_ID + "," + Sticker.POSITION + "," + Sticker.TYPE + ") "
+                + "VALUES ('', " + packId + ", (SELECT IFNULL(MAX(" + Sticker.ID + "), 0) FROM " + Sticker.TABLE_NAME + ") + 1, " + type.ordinal() +")");
+//        Sticker sticker = new Sticker("", packId, type);
+//        int stickerId = (int) stickerDao().insertSticker(sticker);
+//        sticker.setPosition(stickerId);
+//        stickerDao().updateSticker(sticker);
+        SimpleSQLiteQuery query = new SimpleSQLiteQuery("SELECT * FROM " + Sticker.TABLE_NAME + " ORDER BY " + Sticker.ID + " DESC LIMIT 1");
+        return stickerDao().getStickerRaw(query);
     }
 }

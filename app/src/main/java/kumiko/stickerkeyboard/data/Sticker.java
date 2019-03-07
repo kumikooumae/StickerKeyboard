@@ -27,13 +27,13 @@ public class Sticker implements Parcelable {
 
     static final String ID = "id";
 
-    private static final String FILE_NAME = "file_name";
+    static final String FILE_NAME = "file_name";
 
     static final String PACK_ID = "pack_id";
 
-    private static final String POSITION = "position";
+    static final String POSITION = "position";
 
-    private static final String TYPE = "type";
+    static final String TYPE = "type";
 
     public enum Type {
         JPEG, PNG, GIF, WEBP, UNKNOWN
