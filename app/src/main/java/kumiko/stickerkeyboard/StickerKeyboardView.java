@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
+
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -37,7 +39,7 @@ public class StickerKeyboardView extends FrameLayout {
         super(context);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         service = (IMEService) context;
-        inflater = LayoutInflater.from(context);
+        inflater = LayoutInflater.from(new ContextThemeWrapper(context, R.style.AppTheme));
         inflater.inflate(R.layout.image_keyboard, this);
 
         getStickerPacksTask = new GetStickerPacksTask();
