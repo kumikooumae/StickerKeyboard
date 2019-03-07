@@ -51,6 +51,10 @@ public class FileHelper {
         BufferedInputStream bufferedInputStream = null;
         BufferedOutputStream bufferedOutputStream = null;
         File destFile = getStickerFile(context, sticker);
+        File parentDir = destFile.getParentFile();
+        if (!parentDir.exists()) {
+            parentDir.mkdirs();
+        }
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(uri);
             if (inputStream != null) {
