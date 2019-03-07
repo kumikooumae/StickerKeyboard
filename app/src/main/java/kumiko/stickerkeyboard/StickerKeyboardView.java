@@ -33,8 +33,6 @@ public class StickerKeyboardView extends FrameLayout {
 
     private GetStickerPacksTask getStickerPacksTask;
 
-    private RefreshHistoryTask refreshHistoryTask;
-
     public StickerKeyboardView(@NonNull Context context) {
         super(context);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -45,8 +43,6 @@ public class StickerKeyboardView extends FrameLayout {
         getStickerPacksTask = new GetStickerPacksTask();
         getStickerPacksTask.setListener(getOnLoadedStickerPacksListener());
         getStickerPacksTask.execute();
-
-        refreshHistoryTask = new RefreshHistoryTask();
 
         ImageButton imeSwitcher = findViewById(R.id.ime_switcher);
         final InputMethodManager inputMethodManager = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -70,7 +66,7 @@ public class StickerKeyboardView extends FrameLayout {
     }
 
     void refreshHistory(Sticker sticker) {
-        refreshHistoryTask.execute(sticker);
+        new RefreshHistoryTask().execute(sticker);
     }
 
     private static class GetStickerPacksTask extends AsyncTask<Void, Void, List<StickerPack>> {
