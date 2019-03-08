@@ -1,7 +1,6 @@
 package kumiko.stickerkeyboard.data;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +24,15 @@ public abstract class Database extends RoomDatabase {
 
     private SupportSQLiteDatabase sqldb;
 
+    private List<StickerPack> packs;
+
     private static final int MAX_HISTORIES = 50;
 
     private List<History> histories;
 
     private List<Sticker> historyStickers;
+
+    private static final String TAG = "Database";
 
     public static synchronized Database getInstance(Context context) {
         if (instance == null) {
@@ -40,15 +43,13 @@ public abstract class Database extends RoomDatabase {
     }
 
     public List<StickerPack> getAllStickerPacks() {
-        List<StickerPack> packs = stickerPackDao().getAllStickerPacks();
-        for (StickerPack pack: packs) {
-            pack.stickers = getStickers(pack);
+        if (packs == null) {
+            packs = stickerPackDao().getAllStickerPacks();
+            for (StickerPack pack: packs) {
+                pack.stickers = stickerDao().getStickers(pack.getId());
+            }
         }
         return packs;
-    }
-
-    public List<Sticker> getStickers(@NonNull StickerPack pack) {
-        return stickerDao().getStickers(pack.getId());
     }
 
     public synchronized List<Sticker> getHistoryStickersReversed() {
@@ -85,9 +86,10 @@ public abstract class Database extends RoomDatabase {
         historyDao().deleteHistory(removed);
     }
 
-    public List<StickerPack> addNewEmptyPack(String name) {
-        stickerPackDao().insertStickerPack(new StickerPack(name));
-        return getAllStickerPacks();
+    public synchronized void addNewEmptyPack(String name) {
+        StickerPack pack = new StickerPack(name);
+        stickerPackDao().insertStickerPack(pack);
+        packs.add(pack);
     }
 
     public Sticker addNewSticker(int packId, Sticker.Type type) {
@@ -100,6 +102,13 @@ public abstract class Database extends RoomDatabase {
 //        sticker.setPosition(stickerId);
 //        stickerDao().updateSticker(sticker);
         SimpleSQLiteQuery query = new SimpleSQLiteQuery("SELECT * FROM " + Sticker.TABLE_NAME + " ORDER BY " + Sticker.ID + " DESC LIMIT 1");
-        return stickerDao().getStickerRaw(query);
+        Sticker sticker = stickerDao().getStickerRaw(query);
+        for (StickerPack pack: packs) {
+            if (pack.getId() == packId) {
+                pack.getStickers().add(sticker);
+                break;
+            }
+        }
+        return sticker;
     }
 }
