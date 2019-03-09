@@ -6,9 +6,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.RawQuery;
 import androidx.room.Update;
-import androidx.sqlite.db.SupportSQLiteQuery;
 
 @Dao
 public interface StickerDao {
@@ -27,6 +25,6 @@ public interface StickerDao {
     @Query("SELECT * FROM " + Sticker.TABLE_NAME + " WHERE " + Sticker.ID + " = :stickerId")
     Sticker getSticker(int stickerId);
 
-    @RawQuery
-    Sticker getStickerRaw(SupportSQLiteQuery query);
+    @Query("SELECT * FROM "+ Sticker.TABLE_NAME + " ORDER BY " + Sticker.ID + " DESC LIMIT 1")
+    Sticker getLatestInsertedSticker();
 }

@@ -8,7 +8,6 @@ import java.util.Collections;
 
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @androidx.room.Database(entities = {Sticker.class, StickerPack.class, History.class}, version = 1)
@@ -92,17 +91,12 @@ public abstract class Database extends RoomDatabase {
         packs.add(pack);
     }
 
-    public Sticker addNewSticker(int packId, Sticker.Type type) {
+    public synchronized Sticker addNewSticker(int packId, Sticker.Type type) {
         // fileName is unused
         sqldb.execSQL("INSERT INTO " + Sticker.TABLE_NAME
                 + "(" + Sticker.FILE_NAME + "," + Sticker.PACK_ID + "," + Sticker.POSITION + "," + Sticker.TYPE + ") "
                 + "VALUES ('', " + packId + ", (SELECT IFNULL(MAX(" + Sticker.ID + "), 0) FROM " + Sticker.TABLE_NAME + ") + 1, " + type.ordinal() +")");
-//        Sticker sticker = new Sticker("", packId, type);
-//        int stickerId = (int) stickerDao().insertSticker(sticker);
-//        sticker.setPosition(stickerId);
-//        stickerDao().updateSticker(sticker);
-        SimpleSQLiteQuery query = new SimpleSQLiteQuery("SELECT * FROM " + Sticker.TABLE_NAME + " ORDER BY " + Sticker.ID + " DESC LIMIT 1");
-        Sticker sticker = stickerDao().getStickerRaw(query);
+        Sticker sticker = stickerDao().getLatestInsertedSticker();
         for (StickerPack pack: packs) {
             if (pack.getId() == packId) {
                 pack.getStickers().add(sticker);
