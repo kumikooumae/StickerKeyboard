@@ -71,10 +71,9 @@ public abstract class Database extends RoomDatabase {
         if (histories.size() >= MAX_HISTORIES || historyStickers.size() >= MAX_HISTORIES) {
             removeFromHistory(MAX_HISTORIES);
         }
-        History newHistory = new History(sticker.getId());
-        histories.add(0, newHistory);
+        historyDao().insertHistory(new History(sticker.getId()));
+        histories.add(0, historyDao().getLatestInsertedHistory());
         historyStickers.add(0, sticker);
-        historyDao().insertHistory(newHistory);
     }
 
     private void removeFromHistory(int position) {
