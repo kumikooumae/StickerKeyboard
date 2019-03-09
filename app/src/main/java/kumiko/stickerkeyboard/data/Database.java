@@ -83,9 +83,8 @@ public abstract class Database extends RoomDatabase {
     }
 
     public synchronized void addNewEmptyPack(String name) {
-        StickerPack pack = new StickerPack(name);
-        stickerPackDao().insertStickerPack(pack);
-        packs.add(pack);
+        stickerPackDao().insertStickerPack(new StickerPack(name));
+        packs.add(stickerPackDao().getLastStickerPack());
     }
 
     public synchronized Sticker addNewSticker(int packId, Sticker.Type type) {

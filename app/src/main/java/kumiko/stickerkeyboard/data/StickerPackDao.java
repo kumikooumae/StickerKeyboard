@@ -21,4 +21,7 @@ public interface StickerPackDao {
 
     @Query("SELECT * FROM " + StickerPack.TABLE_NAME)
     List<StickerPack> getAllStickerPacks();
+
+    @Query("SELECT * FROM " + StickerPack.TABLE_NAME + " ORDER BY " + StickerPack.ID + " DESC LIMIT 1")
+    StickerPack getLastStickerPack();
 }
