@@ -19,7 +19,7 @@ public class History {
 
     static final String TABLE_NAME = "history";
 
-    private static final String ID = "id";
+    static final String ID = "id";
 
     static final String STICKER_ID = "sticker_id";
 

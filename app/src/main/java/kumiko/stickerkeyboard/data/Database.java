@@ -4,7 +4,6 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
 
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -53,8 +52,7 @@ public abstract class Database extends RoomDatabase {
 
     public synchronized List<Sticker> getHistoryStickersReversed() {
         if (histories == null || historyStickers == null) {
-            histories = historyDao().getHistories();
-            Collections.reverse(histories);
+            histories = historyDao().getHistoriesReversed();
             historyStickers = new ArrayList<>();
             for (History history: histories) {
                 historyStickers.add(stickerDao().getSticker(history.getStickerId()));

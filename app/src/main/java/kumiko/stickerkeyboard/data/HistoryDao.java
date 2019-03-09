@@ -19,6 +19,9 @@ public interface HistoryDao {
     @Delete
     void deleteHistory(History history);
 
-    @Query("SELECT * FROM " + History.TABLE_NAME)
-    List<History> getHistories();
+    @Query("SELECT * FROM " + History.TABLE_NAME + " ORDER BY " + History.ID + " DESC")
+    List<History> getHistoriesReversed();
+
+    @Query("SELECT * FROM " + History.TABLE_NAME + " ORDER BY " + History.ID + " DESC LIMIT 1")
+    History getLatestInsertedHistory();
 }
