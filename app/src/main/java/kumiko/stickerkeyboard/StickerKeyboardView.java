@@ -77,7 +77,7 @@ public class StickerKeyboardView extends FrameLayout {
         protected List<StickerPack> doInBackground(Void... params) {
             Context appContext = MyApplication.getAppContext();
             Database db = Database.getInstance(appContext);
-            List<StickerPack> packs = db.getAllStickerPacks();
+            List<StickerPack> packs = new ArrayList<>(db.getAllStickerPacks()); // clone a list, because will attach history list later
             StickerPack historyPack = new StickerPack(appContext.getResources().getString(R.string.history_pack_name));
             historyPack.setStickers(db.getHistoryStickersReversed());
             packs.add(0, historyPack);
