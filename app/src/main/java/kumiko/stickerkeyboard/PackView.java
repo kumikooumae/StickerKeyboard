@@ -33,6 +33,17 @@ public class PackView extends RecyclerView {
         stickerSize = getResources().getDimensionPixelSize(R.dimen.sticker_size);
 
         manager = new GridLayoutManager(context, 1);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                Adapter adapter = getAdapter();
+                if (adapter instanceof StickerKeyboardAdapter && adapter.getItemViewType(position) == StickerKeyboardAdapter.VIEW_TYPE_HEADER) {
+                    return manager.getSpanCount();
+                } else {
+                    return 1;
+                }
+            }
+        });
         setLayoutManager(manager);
     }
 

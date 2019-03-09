@@ -11,9 +11,9 @@ import kumiko.stickerkeyboard.data.Sticker;
 
 class StickerKeyboardAdapter extends StickerBaseAdapter {
 
-    private static final int VIEW_TYPE_HEADER = 0;
+    static final int VIEW_TYPE_HEADER = 1;
 
-    private static final int VIEW_TYPE_STICKER = 1;
+    private static final int VIEW_TYPE_STICKER = 0;
 
     private String packName;
 
