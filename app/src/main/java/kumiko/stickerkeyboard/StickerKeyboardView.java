@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import android.os.IBinder;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,13 +123,16 @@ public class StickerKeyboardView extends FrameLayout {
                     ImageView tabItemView = (ImageView) inflater.inflate(R.layout.tab_item, new LinearLayout(service), false);
                     if (i == 0) {
                         tabItemView.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
-                    } else {
+                    } else if (!packs.get(i).getStickers().isEmpty()) {
                         Sticker cover = packs.get(i).getStickers().get(0);
-                        Glide.with(service)
-                                .load((cover != null) ? FileHelper.getStickerFile(service, cover) : null)
-                                .apply(RequestOptions.fitCenterTransform())
-                                .error(Glide.with(service).load(android.R.drawable.stat_notify_error))
-                                .into(tabItemView);
+                        if (cover != null) {
+                            Glide.with(service)
+                                    .load(FileHelper.getStickerFile(service, cover))
+                                    .apply(RequestOptions.fitCenterTransform())
+                                    .error(Glide.with(service).load(android.R.drawable.stat_notify_error))
+                                    .into(tabItemView);
+                        }
+
                     }
                     TabLayout.Tab packTab = packsTab.getTabAt(i);
                     if (packTab != null) {
