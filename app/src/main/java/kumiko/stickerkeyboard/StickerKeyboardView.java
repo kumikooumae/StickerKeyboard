@@ -50,8 +50,9 @@ public class StickerKeyboardView extends FrameLayout {
         imeSwitcher.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (inputMethodManager != null) {
-                    inputMethodManager.getLastInputMethodSubtype();
+                final IBinder token = service.getWindow().getWindow().getAttributes().token;
+                if (token != null && inputMethodManager != null) {
+                    inputMethodManager.switchToLastInputMethod(token);
                 }
             }
         });
