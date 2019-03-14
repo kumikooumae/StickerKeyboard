@@ -71,6 +71,10 @@ public class StickerKeyboardView extends FrameLayout {
         new RefreshHistoryTask().execute(sticker);
     }
 
+    void refreshStickers() {
+
+    }
+
     private static class GetStickerPacksTask extends AsyncTask<Void, Void, List<StickerPack>> {
 
         private Listener listener;
@@ -79,6 +83,7 @@ public class StickerKeyboardView extends FrameLayout {
         protected List<StickerPack> doInBackground(Void... params) {
             Context appContext = MyApplication.getAppContext();
             Database db = Database.getInstance(appContext);
+            //TODO: need to solve: packs is copied. The items in old pack is synchronized with Database, but if new pack added, does not change.
             List<StickerPack> packs = new ArrayList<>(db.getAllStickerPacks()); // clone a list, because will attach history list later
             StickerPack historyPack = new StickerPack(appContext.getResources().getString(R.string.history_pack_name));
             historyPack.setStickers(db.getHistoryStickersReversed());
@@ -108,6 +113,7 @@ public class StickerKeyboardView extends FrameLayout {
             public void onFinish(List<StickerPack> packs) {
                 List<PackView> packViews = new ArrayList<>();
                 for (StickerPack pack: packs) {
+                    //TODO: replace List<PackView> with List<StickerPackPagerAdapter>, since the views are stored in a list, viewpager does not garbage collect
                     PackView packView = new PackView(service);
                     packView.setAdapter(new StickerKeyboardAdapter(pack.getStickers(), pack.getName()));
                     packViews.add(packView);

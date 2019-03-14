@@ -1,7 +1,10 @@
 package kumiko.stickerkeyboard;
 
+import android.content.BroadcastReceiver;
 import android.content.ClipDescription;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.Build;
@@ -13,24 +16,23 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import java.io.File;
-import kumiko.stickerkeyboard.data.Database;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import kumiko.stickerkeyboard.data.Sticker;
 
 public class IMEService extends InputMethodService {
 
     private static final String AUTHORITY = "kumiko.stickerkeyboard";
 
-    private static final String TAG = "IMEService";
+    private static final String ACTION_STICKER_PACK_UPDATED = "kumiko.stickerkeyboard.ACTION_STICKER_PACK_UPDATED";
 
-    private Database db;
+    private static final String TAG = "IMEService";
 
     private StickerKeyboardView stickerKeyboardView;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        db = Database.getInstance(this);
-    }
+    private LocalBroadcastManager localBroadcastManager;
+
+    private StickerUpdateReceiver stickerUpdateReceiver;
 
     @Override
     public View onCreateInputView() {
@@ -65,5 +67,34 @@ public class IMEService extends InputMethodService {
                 getCurrentInputConnection(),
                 getCurrentInputEditorInfo(),
                 inputContentInfoCompat, flag, null);
+    }
+
+    static void notifyStickerPackUpdated(Context context) {
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        localBroadcastManager.sendBroadcast(new Intent(ACTION_STICKER_PACK_UPDATED));
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_STICKER_PACK_UPDATED);
+        stickerUpdateReceiver = new StickerUpdateReceiver();
+        localBroadcastManager.registerReceiver(stickerUpdateReceiver, intentFilter);
+    }
+
+    @Override
+    public void onDestroy() {
+        localBroadcastManager.unregisterReceiver(stickerUpdateReceiver);
+        super.onDestroy();
+    }
+
+    class StickerUpdateReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
     }
 }
