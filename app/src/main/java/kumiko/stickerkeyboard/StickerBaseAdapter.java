@@ -43,9 +43,4 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
     }
 
     abstract Sticker getSticker(int onBindPosition);
-
-    void update(List<Sticker> stickers) {
-        this.stickers = stickers;
-        notifyDataSetChanged();
-    }
 }

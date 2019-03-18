@@ -176,7 +176,7 @@ public class StickerKeyboardView extends FrameLayout {
         @Override
         protected void onPostExecute(List<Sticker> historyStickers) {
             if (historyAdapter != null) {
-                historyAdapter.update(historyStickers);
+                historyAdapter.notifyDataSetChanged();
             }
         }
     }

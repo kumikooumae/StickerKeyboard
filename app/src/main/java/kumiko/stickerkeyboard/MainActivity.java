@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            stickerPackListAdapter.update(packs);
+            stickerPackListAdapter.notifyDataSetChanged();
         }
     }
 

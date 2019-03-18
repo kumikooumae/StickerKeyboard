@@ -104,7 +104,7 @@ public class PackActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             // TODO: remove progress
-            adapter.update(pack.getStickers());
+            adapter.notifyDataSetChanged();
         }
     }
 }
