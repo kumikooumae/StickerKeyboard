@@ -9,16 +9,17 @@ import java.util.List;
 
 class StickerPackPagerAdapter extends PagerAdapter {
 
-    private List<PackView> packViews;
+    private List<StickerKeyboardAdapter> stickerAdapters;
 
-    StickerPackPagerAdapter(List<PackView> packViews) {
-        this.packViews = packViews;
+    StickerPackPagerAdapter(List<StickerKeyboardAdapter> stickerAdapters) {
+        this.stickerAdapters = stickerAdapters;
     }
 
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        PackView packView = packViews.get(position);
+        PackView packView = new PackView(container.getContext());
+        packView.setAdapter(stickerAdapters.get(position));
         container.addView(packView);
         return packView;
     }
@@ -28,14 +29,9 @@ class StickerPackPagerAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
-    private void update(List<PackView> packViews) {
-        this.packViews = packViews;
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getCount() {
-        return packViews.size();
+        return stickerAdapters.size();
     }
 
     @Override

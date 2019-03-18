@@ -30,6 +30,8 @@ public class StickerKeyboardView extends FrameLayout {
 
     private LayoutInflater inflater;
 
+    private List<StickerKeyboardAdapter> stickerAdapters;
+
     private static StickerKeyboardAdapter historyAdapter;
 
     private GetStickerPacksTask getStickerPacksTask;
@@ -79,22 +81,24 @@ public class StickerKeyboardView extends FrameLayout {
 
         private Listener listener;
 
+        private List<StickerPack> packs;
+
+        private StickerPack historyPack;
+
         @Override
-        protected List<StickerPack> doInBackground(Void... params) {
+        protected Void doInBackground(Void... params) {
             Context appContext = MyApplication.getAppContext();
             Database db = Database.getInstance(appContext);
-            //TODO: need to solve: packs is copied. The items in old pack is synchronized with Database, but if new pack added, does not change.
-            List<StickerPack> packs = new ArrayList<>(db.getAllStickerPacks()); // clone a list, because will attach history list later
-            StickerPack historyPack = new StickerPack(appContext.getResources().getString(R.string.history_pack_name));
+            packs = db.getAllStickerPacks();
+            historyPack = new StickerPack(appContext.getResources().getString(R.string.history_pack_name));
             historyPack.setStickers(db.getHistoryStickersReversed());
-            packs.add(0, historyPack);
-            return packs;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(List<StickerPack> packs) {
+        protected void onPostExecute(Void aVoid) {
             if (listener != null) {
-                listener.onFinish(packs);
+                listener.onFinish(packs, historyPack);
             }
         }
 
@@ -103,25 +107,23 @@ public class StickerKeyboardView extends FrameLayout {
         }
 
         interface Listener {
-            void onFinish(List<StickerPack> packs);
+            void onFinish(List<StickerPack> packs, StickerPack historyPack);
         }
     }
 
     private GetStickerPacksTask.Listener getOnLoadedStickerPacksListener() {
         return new GetStickerPacksTask.Listener() {
             @Override
-            public void onFinish(List<StickerPack> packs) {
-                List<PackView> packViews = new ArrayList<>();
+            public void onFinish(List<StickerPack> packs, StickerPack historyPack) {
+                historyAdapter = new StickerKeyboardAdapter(historyPack.getStickers(), historyPack.getName());
+                stickerAdapters = new ArrayList<>();
+                stickerAdapters.add(historyAdapter);
                 for (StickerPack pack: packs) {
-                    //TODO: replace List<PackView> with List<StickerPackPagerAdapter>, since the views are stored in a list, viewpager does not garbage collect
-                    PackView packView = new PackView(service);
-                    packView.setAdapter(new StickerKeyboardAdapter(pack.getStickers(), pack.getName()));
-                    packViews.add(packView);
+                    stickerAdapters.add(new StickerKeyboardAdapter(pack.getStickers(), pack.getName()));
                 }
-                historyAdapter = (StickerKeyboardAdapter) packViews.get(0).getAdapter();
 
                 ViewPager packsPager = findViewById(R.id.packs_pager);
-                packsPager.setAdapter(new StickerPackPagerAdapter(packViews));
+                packsPager.setAdapter(new StickerPackPagerAdapter(stickerAdapters));
                 TabLayout packsTab = findViewById(R.id.packs_tab);
                 packsTab.setupWithViewPager(packsPager);
                 packsTab.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -130,8 +132,8 @@ public class StickerKeyboardView extends FrameLayout {
                     ImageView tabItemView = (ImageView) inflater.inflate(R.layout.tab_item, new LinearLayout(service), false);
                     if (i == 0) {
                         tabItemView.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
-                    } else if (!packs.get(i).getStickers().isEmpty()) {
-                        Sticker cover = packs.get(i).getStickers().get(0);
+                    } else if (!packs.get(i-1).getStickers().isEmpty()) {
+                        Sticker cover = packs.get(i-1).getStickers().get(0);
                         if (cover != null) {
                             Glide.with(service)
                                     .load(FileHelper.getStickerFile(service, cover))
