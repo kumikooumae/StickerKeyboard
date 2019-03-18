@@ -76,6 +76,7 @@ public class IMEService extends InputMethodService {
 
     @Override
     public void onCreate() {
+        this.setTheme(R.style.AppTheme);    // Theme must be set before onCreate
         super.onCreate();
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         IntentFilter intentFilter = new IntentFilter();

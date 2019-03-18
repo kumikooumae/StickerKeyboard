@@ -40,7 +40,7 @@ public class StickerKeyboardView extends FrameLayout {
         super(context);
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         service = (IMEService) context;
-        inflater = LayoutInflater.from(new ContextThemeWrapper(context, R.style.AppTheme));
+        inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.image_keyboard, this);
 
         loadPacks();
