@@ -78,9 +78,7 @@ public class StickerKeyboardView extends FrameLayout {
     }
 
     void refreshPack(int position) {
-        if (stickerAdapters.get(position) != null) {
-            stickerAdapters.get(position).notifyDataSetChanged();
-        }
+        stickerAdapters.get(position+1).notifyDataSetChanged();
     }
 
     private static class GetStickerPacksTask extends AsyncTask<Void, Void, Void> {
