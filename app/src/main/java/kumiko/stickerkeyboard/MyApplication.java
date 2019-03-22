@@ -13,7 +13,7 @@ public class MyApplication extends Application {
         appContext = getApplicationContext();
     }
 
-    static Context getAppContext() {
+    public static Context getAppContext() {
         return appContext;
     }
 }

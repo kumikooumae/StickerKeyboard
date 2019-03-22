@@ -8,6 +8,8 @@ import java.util.List;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+import kumiko.stickerkeyboard.IMEService;
+import kumiko.stickerkeyboard.MyApplication;
 
 @androidx.room.Database(entities = {Sticker.class, StickerPack.class, History.class}, version = 1)
 public abstract class Database extends RoomDatabase {
@@ -85,6 +87,7 @@ public abstract class Database extends RoomDatabase {
     public synchronized void addNewEmptyPack(String name) {
         stickerPackDao().insertStickerPack(new StickerPack(name));
         packs.add(stickerPackDao().getLastStickerPack());
+        IMEService.notifyPacksListUpdated(MyApplication.getAppContext());
     }
 
     public synchronized Sticker addNewSticker(int packId, Sticker.Type type) {
@@ -93,9 +96,11 @@ public abstract class Database extends RoomDatabase {
                 + "(" + Sticker.FILE_NAME + "," + Sticker.PACK_ID + "," + Sticker.POSITION + "," + Sticker.TYPE + ") "
                 + "VALUES ('', " + packId + ", (SELECT IFNULL(MAX(" + Sticker.ID + "), 0) FROM " + Sticker.TABLE_NAME + ") + 1, " + type.ordinal() +")");
         Sticker sticker = stickerDao().getLatestInsertedSticker();
-        for (StickerPack pack: packs) {
+        for (int i = 0; i < packs.size(); i++) {
+            StickerPack pack = packs.get(i);
             if (pack.getId() == packId) {
                 pack.getStickers().add(sticker);
+                IMEService.notifyStickerPackUpdated(MyApplication.getAppContext(), i);
                 break;
             }
         }
