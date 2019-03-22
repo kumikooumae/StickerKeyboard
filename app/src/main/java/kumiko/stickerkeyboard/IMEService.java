@@ -24,7 +24,11 @@ public class IMEService extends InputMethodService {
 
     private static final String AUTHORITY = "kumiko.stickerkeyboard";
 
+    private static final String ACTION_PACKS_LIST_UPDATED = "kumiko.stickerkeyboard.ACTION_PACKS_LIST_UPDATED";
+
     private static final String ACTION_STICKER_PACK_UPDATED = "kumiko.stickerkeyboard.ACTION_STICKER_PACK_UPDATED";
+
+    private static final String EXTRA_PACK_POSITION = "kumiko.stickerkeyboard.extra.PACK_POSITION";
 
     private static final String TAG = "IMEService";
 
@@ -69,17 +73,26 @@ public class IMEService extends InputMethodService {
                 inputContentInfoCompat, flag, null);
     }
 
-    static void notifyStickerPackUpdated(Context context) {
+    public static void notifyPacksListUpdated(Context context) {
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        localBroadcastManager.sendBroadcast(new Intent(ACTION_STICKER_PACK_UPDATED));
+        localBroadcastManager.sendBroadcast(new Intent(ACTION_PACKS_LIST_UPDATED));
+    }
+
+    public static void notifyStickerPackUpdated(Context context, int position) {
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        Intent intent = new Intent(ACTION_PACKS_LIST_UPDATED);
+        intent.putExtra(EXTRA_PACK_POSITION, position);
+        localBroadcastManager.sendBroadcast(intent);
     }
 
     @Override
     public void onCreate() {
         this.setTheme(R.style.AppTheme);    // Theme must be set before onCreate
         super.onCreate();
+
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_PACKS_LIST_UPDATED);
         intentFilter.addAction(ACTION_STICKER_PACK_UPDATED);
         stickerUpdateReceiver = new StickerUpdateReceiver();
         localBroadcastManager.registerReceiver(stickerUpdateReceiver, intentFilter);
@@ -95,7 +108,13 @@ public class IMEService extends InputMethodService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            if (stickerKeyboardView != null) {
+                if (ACTION_PACKS_LIST_UPDATED.equals(intent.getAction())) {
+                    stickerKeyboardView.loadPacks();
+                } else if (ACTION_STICKER_PACK_UPDATED.equals(intent.getAction())) {
+                    stickerKeyboardView.refreshPack(intent.getIntExtra(EXTRA_PACK_POSITION, 0));
+                }
+            }
         }
     }
 }
