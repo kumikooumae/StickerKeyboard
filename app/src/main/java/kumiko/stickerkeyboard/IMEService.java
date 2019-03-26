@@ -28,7 +28,7 @@ public class IMEService extends InputMethodService {
 
     private static final String ACTION_STICKER_PACK_UPDATED = "kumiko.stickerkeyboard.ACTION_STICKER_PACK_UPDATED";
 
-    private static final String EXTRA_PACK_POSITION = "kumiko.stickerkeyboard.extra.PACK_POSITION";
+    static final String EXTRA_PACK_POSITION = "kumiko.stickerkeyboard.extra.PACK_POSITION";
 
     private static final String TAG = "IMEService";
 

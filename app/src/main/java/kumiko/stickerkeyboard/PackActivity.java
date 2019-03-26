@@ -31,9 +31,11 @@ public class PackActivity extends AppCompatActivity {
     private static StickerEditorAdapter adapter;
 
     static void startPackActivity(Context context, StickerPack pack) {
-        Intent intent = new Intent(context, PackActivity.class);
-        intent.putExtra(EXTRA_PACK, pack);
-        context.startActivity(intent);
+        if (context instanceof Activity) {
+            Intent intent = new Intent(context, PackActivity.class);
+            intent.putExtra(EXTRA_PACK, pack);
+            ((Activity) context).startActivityForResult(intent, MainActivity.STICKER_PACK_UPDATED_REQUEST_CODE);
+        }
     }
 
     @Override
@@ -78,8 +80,8 @@ public class PackActivity extends AppCompatActivity {
                 uris.add(data.getData());
             }
             new SaveStickersTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, uris.toArray(new Uri[0]));
+            setResult(RESULT_OK);
         }
-
     }
 
     private static class SaveStickersTask extends AsyncTask<Uri, Void, Void> {

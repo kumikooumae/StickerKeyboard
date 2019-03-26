@@ -1,9 +1,12 @@
 package kumiko.stickerkeyboard;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private LoadPacksTask loadPacksTask;
 
     private static StickerPackListAdapter stickerPackListAdapter;
+
+    static final int STICKER_PACK_UPDATED_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +96,16 @@ public class MainActivity extends AppCompatActivity {
                 packList.setAdapter(stickerPackListAdapter);
             }
         };
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case STICKER_PACK_UPDATED_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    stickerPackListAdapter.notifyDataSetChanged();
+                }
+        }
     }
 
     private static class AddNewEmptyPackTask extends AsyncTask<String, Void, Void> {
