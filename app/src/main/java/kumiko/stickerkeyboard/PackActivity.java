@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +32,7 @@ public class PackActivity extends AppCompatActivity {
 
     private static StickerEditorAdapter adapter;
 
-    static void startPackActivity(Context context, StickerPack pack) {
+    static void startPackActivity(Context context, @NonNull StickerPack pack) {
         if (context instanceof Activity) {
             Intent intent = new Intent(context, PackActivity.class);
             intent.putExtra(EXTRA_PACK, pack);
@@ -91,11 +93,12 @@ public class PackActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Void doInBackground(Uri... uris) {
+        protected Void doInBackground(@NonNull Uri... uris) {
             Context context = MyApplication.getAppContext();
             Database db = Database.getInstance(context);
             for (Uri uri: uris) {
                 String mimeType = context.getContentResolver().getType(uri);
+                // TODO: you can pass in StickerPack to db.addNewSticker() so that no need to traverse
                 Sticker sticker = db.addNewSticker(pack.getId(), FileHelper.getStickerType(mimeType));
                 FileHelper.saveStickerFrom(uri, sticker);
                 pack.getStickers().add(sticker);
@@ -106,6 +109,7 @@ public class PackActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             // TODO: remove progress
+            // TODO: notify insert instead of notify dataset?
             adapter.notifyDataSetChanged();
         }
     }

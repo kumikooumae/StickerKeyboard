@@ -3,10 +3,11 @@ package kumiko.stickerkeyboard;
 import android.content.Context;
 import android.os.AsyncTask;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.IBinder;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -19,6 +20,8 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.Sticker;
@@ -67,7 +70,7 @@ public class StickerKeyboardView extends FrameLayout {
         });
     }
 
-    void refreshHistory(Sticker sticker) {
+    void refreshHistory(@NonNull Sticker sticker) {
         new RefreshHistoryTask().execute(sticker);
     }
 
@@ -83,7 +86,7 @@ public class StickerKeyboardView extends FrameLayout {
 
     private static class GetStickerPacksTask extends AsyncTask<Void, Void, Void> {
 
-        private Listener listener;
+        @Nullable private Listener listener;
 
         private List<StickerPack> packs;
 
@@ -106,19 +109,20 @@ public class StickerKeyboardView extends FrameLayout {
             }
         }
 
-        void setListener(Listener listener) {
+        void setListener(@Nullable Listener listener) {
             this.listener = listener;
         }
 
         interface Listener {
-            void onFinish(List<StickerPack> packs, StickerPack historyPack);
+            void onFinish(@NonNull List<StickerPack> packs, @NonNull StickerPack historyPack);
         }
     }
 
+    @NonNull
     private GetStickerPacksTask.Listener getOnLoadedStickerPacksListener() {
         return new GetStickerPacksTask.Listener() {
             @Override
-            public void onFinish(List<StickerPack> packs, StickerPack historyPack) {
+            public void onFinish(@NonNull List<StickerPack> packs, @NonNull StickerPack historyPack) {
                 historyAdapter = new StickerKeyboardAdapter(historyPack.getStickers(), historyPack.getName());
                 stickerAdapters = new ArrayList<>();
                 stickerAdapters.add(historyAdapter);
@@ -156,7 +160,7 @@ public class StickerKeyboardView extends FrameLayout {
         };
     }
 
-    private static class RefreshHistoryTask extends AsyncTask<Sticker, Void, List<Sticker>> {
+    private static class RefreshHistoryTask extends AsyncTask<Sticker, Void, Void> {
 
         private Database db;
 
@@ -166,13 +170,13 @@ public class StickerKeyboardView extends FrameLayout {
         }
 
         @Override
-        protected List<Sticker> doInBackground(Sticker... stickers) {
-            db.refreshHistory(stickers[0]);
-            return db.getHistoryStickersReversed();
+        protected Void doInBackground(@NonNull Sticker... stickers) {
+            db.refreshHistory(Objects.requireNonNull(stickers[0]));
+            return null;
         }
 
         @Override
-        protected void onPostExecute(List<Sticker> historyStickers) {
+        protected void onPostExecute(Void aVoid) {
             if (historyAdapter != null) {
                 historyAdapter.notifyDataSetChanged();
             }

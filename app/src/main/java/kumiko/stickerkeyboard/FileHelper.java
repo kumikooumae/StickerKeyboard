@@ -17,26 +17,27 @@ public class FileHelper {
 
     static final String MIME_IMAGE = "image/*";
 
-    static final String MIME_JPEG = "image/jpeg";
+    private static final String MIME_JPEG = "image/jpeg";
 
-    static final String MIME_PNG = "image/png";
+    private static final String MIME_PNG = "image/png";
 
-    static final String MIME_GIF = "image/gif";
+    private static final String MIME_GIF = "image/gif";
 
-    static final String MIME_WEBP = "image/webp";
+    private static final String MIME_WEBP = "image/webp";
 
-    static final String EXT_JPEG = ".jpg";
+    private static final String EXT_JPEG = ".jpg";
 
-    static final String EXT_PNG = ".png";
+    private static final String EXT_PNG = ".png";
 
-    static final String EXT_GIF = ".gif";
+    private static final String EXT_GIF = ".gif";
 
-    static final String EXT_WEBP = ".webp";
+    private static final String EXT_WEBP = ".webp";
 
     private static final String STICKER_DIR = "stickers";
 
     private static final String TAG = "FileHelper";
 
+    @NonNull
     static File getStickerFile(@NonNull Context context, @NonNull Sticker sticker) {
         return new File(new File(new File(context.getFilesDir(), STICKER_DIR), Integer.toString(sticker.getPackId())), getStickerFileName(sticker));
     }
@@ -47,7 +48,7 @@ public class FileHelper {
      * @param uri Sticker Uri
      * @param sticker Sticker object
      */
-    static synchronized void saveStickerFrom(Uri uri, Sticker sticker) {
+    static synchronized void saveStickerFrom(@NonNull Uri uri, @NonNull Sticker sticker) {
         // TODO: 2019/2/28 stickerId.ext -> save to disk
         Context context = MyApplication.getAppContext();
         BufferedInputStream bufferedInputStream = null;
@@ -98,6 +99,7 @@ public class FileHelper {
         }
     }
 
+    @NonNull
     private static String getStickerFileName(@NonNull Sticker sticker) {
         String ext;
         switch (sticker.getType()) {
@@ -120,6 +122,7 @@ public class FileHelper {
         return Integer.toString(sticker.getId()) + ext;
     }
 
+    @NonNull
     static String getMime(@NonNull Sticker.Type type) {
         switch (type) {
             case JPEG:
@@ -135,7 +138,8 @@ public class FileHelper {
         }
     }
 
-    public static Sticker.Type getStickerType(String mimeType) {
+    @NonNull
+    static Sticker.Type getStickerType(String mimeType) {
         if (MIME_JPEG.equals(mimeType)) {
             return Sticker.Type.JPEG;
         } else if (MIME_PNG.equals(mimeType)) {

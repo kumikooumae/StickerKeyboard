@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.List;
+import java.util.Objects;
+
 import kumiko.stickerkeyboard.data.Sticker;
 
 class StickerKeyboardAdapter extends StickerBaseAdapter {
@@ -20,13 +22,13 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
         TextView packTitle;
 
-        HeaderViewHolder(TextView view) {
+        HeaderViewHolder(@NonNull TextView view) {
             super(view);
             packTitle = view;
         }
     }
 
-    StickerKeyboardAdapter(List<Sticker> stickers, String packName) {
+    StickerKeyboardAdapter(@NonNull List<Sticker> stickers, @NonNull String packName) {
         super(stickers);
         this.packName = packName;
     }
@@ -35,7 +37,7 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_HEADER) {
-            TextView packTitle = (TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_view_header, parent, false);
+            TextView packTitle = Objects.requireNonNull((TextView) LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_view_header, parent, false));
             return new HeaderViewHolder(packTitle);
         } else {    // VIEW_TYPE_STICKER
             final StickerViewHolder holder = createStickerViewHolder(parent);
@@ -85,6 +87,7 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
         return stickers.size() + 1;
     }
 
+    @NonNull
     @Override
     Sticker getSticker(int onBindPosition) {
         return stickers.get(onBindPosition - 1);

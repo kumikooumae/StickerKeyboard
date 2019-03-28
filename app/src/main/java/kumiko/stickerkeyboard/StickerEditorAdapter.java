@@ -9,7 +9,7 @@ import kumiko.stickerkeyboard.data.Sticker;
 
 class StickerEditorAdapter extends StickerBaseAdapter {
 
-    StickerEditorAdapter(List<Sticker> stickers) {
+    StickerEditorAdapter(@NonNull List<Sticker> stickers) {
         super(stickers);
     }
 
@@ -43,6 +43,7 @@ class StickerEditorAdapter extends StickerBaseAdapter {
         return stickers.size();
     }
 
+    @NonNull
     @Override
     Sticker getSticker(int onBindPosition) {
         return stickers.get(onBindPosition);

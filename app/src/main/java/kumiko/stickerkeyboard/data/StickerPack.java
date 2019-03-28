@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -23,21 +26,23 @@ public class StickerPack implements Parcelable {
     @ColumnInfo(name = ID)
     public int id;
 
+    @NonNull
     @ColumnInfo(name = NAME)
     public String name;
 
+    @NonNull
     @Ignore
     public List<Sticker> stickers;
 
-    public StickerPack(String name) {
+    public StickerPack(@NonNull String name) {
         this.name = name;
         this.stickers = new ArrayList<>();
     }
 
     private StickerPack(Parcel in) {
         id = in.readInt();
-        name = in.readString();
-        stickers = in.createTypedArrayList(Sticker.CREATOR);
+        name = Objects.requireNonNull(in.readString());
+        stickers = Objects.requireNonNull(in.createTypedArrayList(Sticker.CREATOR));
     }
 
     @Override
@@ -68,15 +73,17 @@ public class StickerPack implements Parcelable {
         return id;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
 
+    @NonNull
     public List<Sticker> getStickers() {
         return stickers;
     }
 
-    public void setStickers(List<Sticker> stickers) {
+    public void setStickers(@NonNull List<Sticker> stickers) {
         this.stickers = stickers;
     }
 }

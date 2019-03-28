@@ -4,7 +4,9 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
@@ -34,7 +36,7 @@ public abstract class Database extends RoomDatabase {
 
     private static final String TAG = "Database";
 
-    public static synchronized Database getInstance(Context context) {
+    public static synchronized Database getInstance(@NonNull Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(), Database.class, "sticker.db").build();
             instance.sqldb = instance.getOpenHelper().getWritableDatabase();
@@ -42,28 +44,30 @@ public abstract class Database extends RoomDatabase {
         return instance;
     }
 
+    @NonNull
     public List<StickerPack> getAllStickerPacks() {
         if (packs == null) {
             packs = stickerPackDao().getAllStickerPacks();
             for (StickerPack pack: packs) {
-                pack.stickers = stickerDao().getStickers(pack.getId());
+                pack.stickers = Objects.requireNonNull(stickerDao().getStickers(pack.getId()));
             }
         }
         return packs;
     }
 
+    @NonNull
     public synchronized List<Sticker> getHistoryStickersReversed() {
         if (histories == null || historyStickers == null) {
             histories = historyDao().getHistoriesReversed();
             historyStickers = new ArrayList<>();
             for (History history: histories) {
-                historyStickers.add(stickerDao().getSticker(history.getStickerId()));
+                historyStickers.add(Objects.requireNonNull(stickerDao().getSticker(history.getStickerId())));
             }
         }
         return historyStickers;
     }
 
-    public synchronized void refreshHistory(Sticker sticker) {
+    public synchronized void refreshHistory(@NonNull Sticker sticker) {
         for (int i = 0; i < historyStickers.size(); i++) {
             if (sticker.getId() == historyStickers.get(i).getId()) {
                 removeFromHistory(i);
@@ -74,7 +78,7 @@ public abstract class Database extends RoomDatabase {
             removeFromHistory(MAX_HISTORIES);
         }
         historyDao().insertHistory(new History(sticker.getId()));
-        histories.add(0, historyDao().getLatestInsertedHistory());
+        histories.add(0, Objects.requireNonNull(historyDao().getLatestInsertedHistory()));
         historyStickers.add(0, sticker);
     }
 
@@ -84,18 +88,19 @@ public abstract class Database extends RoomDatabase {
         historyDao().deleteHistory(removed);
     }
 
-    public synchronized void addNewEmptyPack(String name) {
+    public synchronized void addNewEmptyPack(@NonNull String name) {
         stickerPackDao().insertStickerPack(new StickerPack(name));
-        packs.add(stickerPackDao().getLastStickerPack());
+        packs.add(Objects.requireNonNull(stickerPackDao().getLastStickerPack()));
         IMEService.notifyPacksListUpdated(MyApplication.getAppContext());
     }
 
-    public synchronized Sticker addNewSticker(int packId, Sticker.Type type) {
+    @NonNull
+    public synchronized Sticker addNewSticker(int packId, @NonNull Sticker.Type type) {
         // fileName is unused
         sqldb.execSQL("INSERT INTO " + Sticker.TABLE_NAME
                 + "(" + Sticker.FILE_NAME + "," + Sticker.PACK_ID + "," + Sticker.POSITION + "," + Sticker.TYPE + ") "
                 + "VALUES ('', " + packId + ", (SELECT IFNULL(MAX(" + Sticker.ID + "), 0) FROM " + Sticker.TABLE_NAME + ") + 1, " + type.ordinal() +")");
-        Sticker sticker = stickerDao().getLatestInsertedSticker();
+        Sticker sticker = Objects.requireNonNull(stickerDao().getLatestInsertedSticker());
         for (int i = 0; i < packs.size(); i++) {
             StickerPack pack = packs.get(i);
             if (pack.getId() == packId) {

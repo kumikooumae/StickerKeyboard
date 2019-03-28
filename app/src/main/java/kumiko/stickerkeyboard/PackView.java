@@ -29,7 +29,7 @@ public class PackView extends RecyclerView {
         init(context);
     }
 
-    private void init(Context context) {
+    private void init(@NonNull Context context) {
         stickerSize = getResources().getDimensionPixelSize(R.dimen.sticker_size);
 
         manager = new GridLayoutManager(context, 1);

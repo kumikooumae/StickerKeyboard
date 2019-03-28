@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
+import java.util.Objects;
+
 import kumiko.stickerkeyboard.data.Sticker;
 import kumiko.stickerkeyboard.data.StickerPack;
 
@@ -27,7 +29,7 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
 
         TextView text;
 
-        PackViewHolder(View view) {
+        PackViewHolder(@NonNull View view) {
             super(view);
             cover = view.findViewById(R.id.pack_card_cover);
             title = view.findViewById(R.id.pack_card_title);
@@ -35,14 +37,14 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
         }
     }
 
-    StickerPackListAdapter(List<StickerPack> packs) {
+    StickerPackListAdapter(@NonNull List<StickerPack> packs) {
         this.packs = packs;
     }
 
     @NonNull
     @Override
     public PackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_pack_card, parent, false);
+        View view = Objects.requireNonNull(LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_pack_card, parent, false));
         final PackViewHolder holder = new PackViewHolder(view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override

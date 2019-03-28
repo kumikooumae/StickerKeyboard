@@ -11,7 +11,7 @@ class StickerPackPagerAdapter extends PagerAdapter {
 
     private List<StickerKeyboardAdapter> stickerAdapters;
 
-    StickerPackPagerAdapter(List<StickerKeyboardAdapter> stickerAdapters) {
+    StickerPackPagerAdapter(@NonNull List<StickerKeyboardAdapter> stickerAdapters) {
         this.stickerAdapters = stickerAdapters;
     }
 

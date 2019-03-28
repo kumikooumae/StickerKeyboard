@@ -3,6 +3,9 @@ package kumiko.stickerkeyboard.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -43,6 +46,7 @@ public class Sticker implements Parcelable {
     @ColumnInfo(name = ID)
     public int id;
 
+    @NonNull
     @ColumnInfo(name = FILE_NAME)
     public String fileName;
 
@@ -52,11 +56,12 @@ public class Sticker implements Parcelable {
     @ColumnInfo(name = POSITION)
     public int position;
 
+    @NonNull
     @ColumnInfo(name = TYPE)
     @TypeConverters(Sticker.class)
     public Type type;
 
-    public Sticker(String fileName, int packId, Type type) {
+    public Sticker(@NonNull String fileName, int packId, @NonNull Type type) {
         this.fileName = fileName;
         this.packId = packId;
         this.type = type;
@@ -66,6 +71,7 @@ public class Sticker implements Parcelable {
         return id;
     }
 
+    @NonNull
     public String getFileName() {
         return fileName;
     }
@@ -82,16 +88,17 @@ public class Sticker implements Parcelable {
         this.position = position;
     }
 
+    @NonNull
     public Type getType() {
         return type;
     }
 
     private Sticker(Parcel in) {
         id = in.readInt();
-        fileName = in.readString();
+        fileName = Objects.requireNonNull(in.readString());
         packId = in.readInt();
         position = in.readInt();
-        type = (Type) in.readSerializable();
+        type = (Type) Objects.requireNonNull(in.readSerializable());
     }
 
     @Override

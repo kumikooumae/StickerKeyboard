@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
+import java.util.Objects;
+
 import kumiko.stickerkeyboard.data.Sticker;
 
 abstract class StickerBaseAdapter extends RecyclerView.Adapter {
@@ -18,22 +20,23 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
     static class StickerViewHolder extends RecyclerView.ViewHolder {
         ImageView sticker;
 
-        StickerViewHolder(ImageView view) {
+        StickerViewHolder(@NonNull ImageView view) {
             super(view);
             sticker = view;
         }
     }
 
-    StickerBaseAdapter(List<Sticker> stickers) {
+    StickerBaseAdapter(@NonNull List<Sticker> stickers) {
         this.stickers = stickers;
     }
 
+    @NonNull
     StickerViewHolder createStickerViewHolder(@NonNull ViewGroup parent) {
-        ImageView sticker = (ImageView) LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_item, parent, false);
+        ImageView sticker = Objects.requireNonNull((ImageView) LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_item, parent, false));
         return new StickerViewHolder(sticker);
     }
 
-    void loadSticker(@NonNull ImageView view, Sticker sticker) {
+    void loadSticker(@NonNull ImageView view, @NonNull Sticker sticker) {
         Context context = view.getContext();
         Glide.with(context)
                 .load(FileHelper.getStickerFile(context, sticker))
@@ -42,5 +45,6 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
                 .into(view);
     }
 
+    @NonNull
     abstract Sticker getSticker(int onBindPosition);
 }

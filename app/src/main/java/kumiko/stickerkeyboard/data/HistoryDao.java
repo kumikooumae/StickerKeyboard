@@ -19,9 +19,21 @@ public interface HistoryDao {
     @Delete
     void deleteHistory(History history);
 
+    /**
+     * Get List<History> in reverse chronological order (newest at front).
+     *
+     * @return Reversed List<History>. NonNull. If no history, empty ArrayList is returned.
+     */
     @Query("SELECT * FROM " + History.TABLE_NAME + " ORDER BY " + History.ID + " DESC")
     List<History> getHistoriesReversed();
 
+    /**
+     * Get latest inserted sticker.
+     * Call this immediately after insertion to get its rowid.
+     * Do not reuse dummy object for insertion, whose rowid is initialized as 0.
+     *
+     * @return Latest inserted history. Nullable.
+     */
     @Query("SELECT * FROM " + History.TABLE_NAME + " ORDER BY " + History.ID + " DESC LIMIT 1")
     History getLatestInsertedHistory();
 }

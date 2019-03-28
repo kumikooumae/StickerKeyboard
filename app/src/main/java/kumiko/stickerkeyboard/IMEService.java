@@ -44,7 +44,7 @@ public class IMEService extends InputMethodService {
         return stickerKeyboardView;
     }
 
-    void sendSticker(Sticker sticker) {
+    void sendSticker(@NonNull Sticker sticker) {
         File stickerFile = FileHelper.getStickerFile(this, sticker);
         doCommitContent(stickerFile, FileHelper.getMime(sticker.getType()));
         stickerKeyboardView.refreshHistory(sticker);
@@ -73,12 +73,12 @@ public class IMEService extends InputMethodService {
                 inputContentInfoCompat, flag, null);
     }
 
-    public static void notifyPacksListUpdated(Context context) {
+    public static void notifyPacksListUpdated(@NonNull Context context) {
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
         localBroadcastManager.sendBroadcast(new Intent(ACTION_PACKS_LIST_UPDATED));
     }
 
-    public static void notifyStickerPackUpdated(Context context, int position) {
+    public static void notifyStickerPackUpdated(@NonNull Context context, int position) {
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
         Intent intent = new Intent(ACTION_PACKS_LIST_UPDATED);
         intent.putExtra(EXTRA_PACK_POSITION, position);

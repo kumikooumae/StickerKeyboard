@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import java.util.List;
+import java.util.Objects;
+
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.StickerPack;
 
@@ -111,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
     private static class AddNewEmptyPackTask extends AsyncTask<String, Void, Void> {
 
         @Override
-        protected Void doInBackground(String... strings) {
-            Database.getInstance(MyApplication.getAppContext()).addNewEmptyPack(strings[0]);
+        protected Void doInBackground(@NonNull String... strings) {
+            Database.getInstance(MyApplication.getAppContext()).addNewEmptyPack(Objects.requireNonNull(strings[0]));
             return null;
         }
 
