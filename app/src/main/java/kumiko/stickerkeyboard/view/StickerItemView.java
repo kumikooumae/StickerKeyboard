@@ -1,4 +1,4 @@
-package kumiko.stickerkeyboard;
+package kumiko.stickerkeyboard.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -21,6 +21,7 @@ public class StickerItemView extends AppCompatImageView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        //noinspection SuspiciousNameCombination
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 }

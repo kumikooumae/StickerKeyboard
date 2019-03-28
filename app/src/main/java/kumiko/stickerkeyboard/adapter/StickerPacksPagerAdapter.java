@@ -1,17 +1,19 @@
-package kumiko.stickerkeyboard;
+package kumiko.stickerkeyboard.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
+import kumiko.stickerkeyboard.view.PackView;
+
 import android.view.View;
 import android.view.ViewGroup;
 import java.util.List;
 
 
-class StickerPackPagerAdapter extends PagerAdapter {
+public class StickerPacksPagerAdapter extends PagerAdapter {
 
-    private List<StickerKeyboardAdapter> stickerAdapters;
+    private final List<StickerPackKeyboardAdapter> stickerAdapters;
 
-    StickerPackPagerAdapter(@NonNull List<StickerKeyboardAdapter> stickerAdapters) {
+    public StickerPacksPagerAdapter(@NonNull List<StickerPackKeyboardAdapter> stickerAdapters) {
         this.stickerAdapters = stickerAdapters;
     }
 

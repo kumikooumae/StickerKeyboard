@@ -13,9 +13,6 @@ public interface HistoryDao {
     @Insert
     void insertHistory(History history);
 
-    @Update
-    void updateHistory(History history);
-
     @Delete
     void deleteHistory(History history);
 

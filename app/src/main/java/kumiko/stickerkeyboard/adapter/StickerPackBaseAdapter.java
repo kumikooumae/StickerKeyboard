@@ -1,4 +1,4 @@
-package kumiko.stickerkeyboard;
+package kumiko.stickerkeyboard.adapter;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -11,14 +11,16 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 import java.util.Objects;
 
+import kumiko.stickerkeyboard.FileHelper;
+import kumiko.stickerkeyboard.R;
 import kumiko.stickerkeyboard.data.Sticker;
 
-abstract class StickerBaseAdapter extends RecyclerView.Adapter {
+abstract class StickerPackBaseAdapter extends RecyclerView.Adapter {
 
-    List<Sticker> stickers;
+    final List<Sticker> stickers;
 
     static class StickerViewHolder extends RecyclerView.ViewHolder {
-        ImageView sticker;
+        final ImageView sticker;
 
         StickerViewHolder(@NonNull ImageView view) {
             super(view);
@@ -26,7 +28,7 @@ abstract class StickerBaseAdapter extends RecyclerView.Adapter {
         }
     }
 
-    StickerBaseAdapter(@NonNull List<Sticker> stickers) {
+    StickerPackBaseAdapter(@NonNull List<Sticker> stickers) {
         this.stickers = stickers;
     }
 

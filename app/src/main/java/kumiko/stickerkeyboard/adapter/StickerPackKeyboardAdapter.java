@@ -1,26 +1,27 @@
-package kumiko.stickerkeyboard;
+package kumiko.stickerkeyboard.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.List;
 import java.util.Objects;
 
+import kumiko.stickerkeyboard.IMEService;
+import kumiko.stickerkeyboard.R;
 import kumiko.stickerkeyboard.data.Sticker;
 
-class StickerKeyboardAdapter extends StickerBaseAdapter {
+public class StickerPackKeyboardAdapter extends StickerPackBaseAdapter {
 
-    static final int VIEW_TYPE_HEADER = 1;
+    public static final int VIEW_TYPE_HEADER = 1;
 
     private static final int VIEW_TYPE_STICKER = 0;
 
-    private String packName;
+    private final String packName;
 
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView packTitle;
+        final TextView packTitle;
 
         HeaderViewHolder(@NonNull TextView view) {
             super(view);
@@ -28,7 +29,7 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
         }
     }
 
-    StickerKeyboardAdapter(@NonNull List<Sticker> stickers, @NonNull String packName) {
+    public StickerPackKeyboardAdapter(@NonNull List<Sticker> stickers, @NonNull String packName) {
         super(stickers);
         this.packName = packName;
     }
@@ -43,18 +44,10 @@ class StickerKeyboardAdapter extends StickerBaseAdapter {
             final StickerViewHolder holder = createStickerViewHolder(parent);
             if (parent.getContext() instanceof IMEService) {
                 final IMEService service = (IMEService) parent.getContext();
-                holder.sticker.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        service.sendSticker(stickers.get(holder.getAdapterPosition() - 1));
-                    }
-                });
-                holder.sticker.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        // Pop up
-                        return false;
-                    }
+                holder.sticker.setOnClickListener(view -> service.sendSticker(stickers.get(holder.getAdapterPosition() - 1)));
+                holder.sticker.setOnLongClickListener(view -> {
+                    // Pop up
+                    return false;
                 });
             }
             return holder;

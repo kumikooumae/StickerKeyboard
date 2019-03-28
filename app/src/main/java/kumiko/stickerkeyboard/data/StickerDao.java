@@ -10,8 +10,6 @@ import androidx.room.Update;
 
 @Dao
 public interface StickerDao {
-    @Insert
-    long insertSticker(Sticker sticker);
 
     @Update
     void updateSticker(Sticker sticker);

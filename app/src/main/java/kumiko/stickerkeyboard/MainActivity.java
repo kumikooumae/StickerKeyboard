@@ -1,6 +1,5 @@
 package kumiko.stickerkeyboard;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,11 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
-import android.view.View;
+
 import android.widget.EditText;
 import java.util.List;
 import java.util.Objects;
 
+import kumiko.stickerkeyboard.adapter.StickerPacksListAdapter;
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.StickerPack;
 
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LoadPacksTask loadPacksTask;
 
-    private static StickerPackListAdapter stickerPackListAdapter;
+    private static StickerPacksListAdapter stickerPacksListAdapter;
 
     static final int STICKER_PACK_UPDATED_REQUEST_CODE = 2;
 
@@ -43,23 +43,15 @@ public class MainActivity extends AppCompatActivity {
         loadPacksTask.execute();
 
         FloatingActionButton addPackFab = findViewById(R.id.add_pack_fab);
-        addPackFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle(getResources().getString(R.string.add_pack));
-                final EditText packNameField = new EditText(MainActivity.this);
-                packNameField.setHint(getResources().getString(R.string.pack_name));
-                builder.setView(packNameField);
-                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        new AddNewEmptyPackTask().execute(packNameField.getText().toString());
-                    }
-                });
-                builder.setNegativeButton(android.R.string.cancel, null);
-                builder.show();
-            }
+        addPackFab.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle(getResources().getString(R.string.add_pack));
+            final EditText packNameField = new EditText(MainActivity.this);
+            packNameField.setHint(getResources().getString(R.string.pack_name));
+            builder.setView(packNameField);
+            builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> new AddNewEmptyPackTask().execute(packNameField.getText().toString()));
+            builder.setNegativeButton(android.R.string.cancel, null);
+            builder.show();
         });
     }
 
@@ -90,14 +82,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private LoadPacksTask.Listener getOnLoadedPacksListener() {
-        return new LoadPacksTask.Listener() {
-            @Override
-            public void onFinish() {
-                RecyclerView packList = findViewById(R.id.pack_list);
-                packList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-                stickerPackListAdapter = new StickerPackListAdapter(packs);
-                packList.setAdapter(stickerPackListAdapter);
-            }
+        return () -> {
+            RecyclerView packsList = findViewById(R.id.packs_list);
+            packsList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            stickerPacksListAdapter = new StickerPacksListAdapter(packs);
+            packsList.setAdapter(stickerPacksListAdapter);
         };
     }
 
@@ -106,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case STICKER_PACK_UPDATED_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    stickerPackListAdapter.notifyDataSetChanged();
+                    stickerPacksListAdapter.notifyDataSetChanged();
                 }
         }
     }
@@ -121,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            stickerPackListAdapter.notifyDataSetChanged();
+            stickerPacksListAdapter.notifyDataSetChanged();
         }
     }
 

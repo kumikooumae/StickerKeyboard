@@ -1,4 +1,4 @@
-package kumiko.stickerkeyboard;
+package kumiko.stickerkeyboard.adapter;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -14,20 +14,23 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 import java.util.Objects;
 
+import kumiko.stickerkeyboard.FileHelper;
+import kumiko.stickerkeyboard.PackActivity;
+import kumiko.stickerkeyboard.R;
 import kumiko.stickerkeyboard.data.Sticker;
 import kumiko.stickerkeyboard.data.StickerPack;
 
-class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter.PackViewHolder> {
+public class StickerPacksListAdapter extends RecyclerView.Adapter<StickerPacksListAdapter.PackViewHolder> {
 
-    private List<StickerPack> packs;
+    private final List<StickerPack> packs;
 
     static class PackViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView cover;
+        final ImageView cover;
 
-        TextView title;
+        final TextView title;
 
-        TextView text;
+        final TextView text;
 
         PackViewHolder(@NonNull View view) {
             super(view);
@@ -37,21 +40,16 @@ class StickerPackListAdapter extends RecyclerView.Adapter<StickerPackListAdapter
         }
     }
 
-    StickerPackListAdapter(@NonNull List<StickerPack> packs) {
+    public StickerPacksListAdapter(@NonNull List<StickerPack> packs) {
         this.packs = packs;
     }
 
     @NonNull
     @Override
     public PackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = Objects.requireNonNull(LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_pack_card, parent, false));
-        final PackViewHolder holder = new PackViewHolder(view);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PackActivity.startPackActivity(view.getContext(), packs.get(holder.getAdapterPosition()));
-            }
-        });
+        View cardView = Objects.requireNonNull(LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_pack_card, parent, false));
+        final PackViewHolder holder = new PackViewHolder(cardView);
+        cardView.setOnClickListener(view -> PackActivity.startPackActivity(view.getContext(), packs.get(holder.getAdapterPosition())));
         return holder;
     }
 

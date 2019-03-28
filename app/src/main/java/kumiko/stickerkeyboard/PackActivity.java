@@ -13,14 +13,15 @@ import androidx.annotation.Nullable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import kumiko.stickerkeyboard.adapter.StickerPackEditorAdapter;
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.Sticker;
 import kumiko.stickerkeyboard.data.StickerPack;
+import kumiko.stickerkeyboard.view.PackView;
 
 public class PackActivity extends AppCompatActivity {
 
@@ -30,9 +31,9 @@ public class PackActivity extends AppCompatActivity {
 
     private static StickerPack pack;
 
-    private static StickerEditorAdapter adapter;
+    private static StickerPackEditorAdapter adapter;
 
-    static void startPackActivity(Context context, @NonNull StickerPack pack) {
+    public static void startPackActivity(Context context, @NonNull StickerPack pack) {
         if (context instanceof Activity) {
             Intent intent = new Intent(context, PackActivity.class);
             intent.putExtra(EXTRA_PACK, pack);
@@ -50,18 +51,15 @@ public class PackActivity extends AppCompatActivity {
         pack = getIntent().getParcelableExtra(EXTRA_PACK);
 
         PackView packView = findViewById(R.id.pack_view);
-        adapter = new StickerEditorAdapter(pack.getStickers());
+        adapter = new StickerPackEditorAdapter(pack.getStickers());
         packView.setAdapter(adapter);
         FloatingActionButton addStickerFab = findViewById(R.id.addStickerFab);
-        addStickerFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType(FileHelper.MIME_IMAGE);
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                startActivityForResult(intent, DOC_REQUEST_CODE);
-            }
+        addStickerFab.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType(FileHelper.MIME_IMAGE);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            startActivityForResult(intent, DOC_REQUEST_CODE);
         });
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -1,10 +1,13 @@
-package kumiko.stickerkeyboard;
+package kumiko.stickerkeyboard.view;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import kumiko.stickerkeyboard.R;
+import kumiko.stickerkeyboard.adapter.StickerPackKeyboardAdapter;
+
 import android.util.AttributeSet;
 
 public class PackView extends RecyclerView {
@@ -37,7 +40,7 @@ public class PackView extends RecyclerView {
             @Override
             public int getSpanSize(int position) {
                 Adapter adapter = getAdapter();
-                if (adapter instanceof StickerKeyboardAdapter && adapter.getItemViewType(position) == StickerKeyboardAdapter.VIEW_TYPE_HEADER) {
+                if (adapter instanceof StickerPackKeyboardAdapter && adapter.getItemViewType(position) == StickerPackKeyboardAdapter.VIEW_TYPE_HEADER) {
                     return manager.getSpanCount();
                 } else {
                     return 1;

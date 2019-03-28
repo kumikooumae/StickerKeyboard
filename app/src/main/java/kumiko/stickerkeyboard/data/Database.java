@@ -34,8 +34,6 @@ public abstract class Database extends RoomDatabase {
 
     private List<Sticker> historyStickers;
 
-    private static final String TAG = "Database";
-
     public static synchronized Database getInstance(@NonNull Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(), Database.class, "sticker.db").build();

@@ -20,7 +20,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <kumiko.stickerkeyboard.PackView
+    <kumiko.stickerkeyboard.view.PackView
         android:id="@+id/pack_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

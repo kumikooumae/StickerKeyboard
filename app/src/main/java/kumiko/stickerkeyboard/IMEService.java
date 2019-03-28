@@ -19,6 +19,7 @@ import java.io.File;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import kumiko.stickerkeyboard.data.Sticker;
+import kumiko.stickerkeyboard.view.StickerKeyboardView;
 
 public class IMEService extends InputMethodService {
 
@@ -28,7 +29,7 @@ public class IMEService extends InputMethodService {
 
     private static final String ACTION_STICKER_PACK_UPDATED = "kumiko.stickerkeyboard.ACTION_STICKER_PACK_UPDATED";
 
-    static final String EXTRA_PACK_POSITION = "kumiko.stickerkeyboard.extra.PACK_POSITION";
+    private static final String EXTRA_PACK_POSITION = "kumiko.stickerkeyboard.extra.PACK_POSITION";
 
     private static final String TAG = "IMEService";
 
@@ -44,7 +45,7 @@ public class IMEService extends InputMethodService {
         return stickerKeyboardView;
     }
 
-    void sendSticker(@NonNull Sticker sticker) {
+    public void sendSticker(@NonNull Sticker sticker) {
         File stickerFile = FileHelper.getStickerFile(this, sticker);
         doCommitContent(stickerFile, FileHelper.getMime(sticker.getType()));
         stickerKeyboardView.refreshHistory(sticker);

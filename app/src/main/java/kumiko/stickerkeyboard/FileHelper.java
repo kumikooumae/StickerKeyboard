@@ -38,7 +38,7 @@ public class FileHelper {
     private static final String TAG = "FileHelper";
 
     @NonNull
-    static File getStickerFile(@NonNull Context context, @NonNull Sticker sticker) {
+    public static File getStickerFile(@NonNull Context context, @NonNull Sticker sticker) {
         return new File(new File(new File(context.getFilesDir(), STICKER_DIR), Integer.toString(sticker.getPackId())), getStickerFileName(sticker));
     }
 
@@ -56,6 +56,7 @@ public class FileHelper {
         File destFile = getStickerFile(context, sticker);
         File parentDir = destFile.getParentFile();
         if (!parentDir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             parentDir.mkdirs();
         }
         try {

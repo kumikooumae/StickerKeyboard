@@ -1,4 +1,4 @@
-package kumiko.stickerkeyboard;
+package kumiko.stickerkeyboard.view;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -9,7 +9,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.IBinder;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -23,19 +22,25 @@ import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import kumiko.stickerkeyboard.FileHelper;
+import kumiko.stickerkeyboard.IMEService;
+import kumiko.stickerkeyboard.MyApplication;
+import kumiko.stickerkeyboard.R;
+import kumiko.stickerkeyboard.adapter.StickerPackKeyboardAdapter;
+import kumiko.stickerkeyboard.adapter.StickerPacksPagerAdapter;
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.Sticker;
 import kumiko.stickerkeyboard.data.StickerPack;
 
 public class StickerKeyboardView extends FrameLayout {
 
-    private IMEService service;
+    private final IMEService service;
 
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
 
-    private List<StickerKeyboardAdapter> stickerAdapters;
+    private List<StickerPackKeyboardAdapter> stickerAdapters;
 
-    private static StickerKeyboardAdapter historyAdapter;
+    private static StickerPackKeyboardAdapter historyAdapter;
 
     private GetStickerPacksTask getStickerPacksTask;
 
@@ -50,37 +55,31 @@ public class StickerKeyboardView extends FrameLayout {
 
         ImageButton imeSwitcher = findViewById(R.id.ime_switcher);
         final InputMethodManager inputMethodManager = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imeSwitcher.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final IBinder token = service.getWindow().getWindow().getAttributes().token;
-                if (token != null && inputMethodManager != null) {
-                    inputMethodManager.switchToLastInputMethod(token);
-                }
+        imeSwitcher.setOnClickListener(v -> {
+            final IBinder token = service.getWindow().getWindow().getAttributes().token;
+            if (token != null && inputMethodManager != null) {
+                inputMethodManager.switchToLastInputMethod(token);
             }
         });
-        imeSwitcher.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (inputMethodManager != null) {
-                    inputMethodManager.showInputMethodPicker();
-                }
-                return true;
+        imeSwitcher.setOnLongClickListener(v -> {
+            if (inputMethodManager != null) {
+                inputMethodManager.showInputMethodPicker();
             }
+            return true;
         });
     }
 
-    void refreshHistory(@NonNull Sticker sticker) {
+    public void refreshHistory(@NonNull Sticker sticker) {
         new RefreshHistoryTask().execute(sticker);
     }
 
-    void loadPacks() {
+    public void loadPacks() {
         getStickerPacksTask = new GetStickerPacksTask();
         getStickerPacksTask.setListener(getOnLoadedStickerPacksListener());
         getStickerPacksTask.execute();
     }
 
-    void refreshPack(int position) {
+    public void refreshPack(int position) {
         stickerAdapters.get(position+1).notifyDataSetChanged();
     }
 
@@ -120,41 +119,38 @@ public class StickerKeyboardView extends FrameLayout {
 
     @NonNull
     private GetStickerPacksTask.Listener getOnLoadedStickerPacksListener() {
-        return new GetStickerPacksTask.Listener() {
-            @Override
-            public void onFinish(@NonNull List<StickerPack> packs, @NonNull StickerPack historyPack) {
-                historyAdapter = new StickerKeyboardAdapter(historyPack.getStickers(), historyPack.getName());
-                stickerAdapters = new ArrayList<>();
-                stickerAdapters.add(historyAdapter);
-                for (StickerPack pack: packs) {
-                    stickerAdapters.add(new StickerKeyboardAdapter(pack.getStickers(), pack.getName()));
+        return (packs, historyPack) -> {
+            historyAdapter = new StickerPackKeyboardAdapter(historyPack.getStickers(), historyPack.getName());
+            stickerAdapters = new ArrayList<>();
+            stickerAdapters.add(historyAdapter);
+            for (StickerPack pack: packs) {
+                stickerAdapters.add(new StickerPackKeyboardAdapter(pack.getStickers(), pack.getName()));
+            }
+
+            ViewPager packsPager = findViewById(R.id.packs_pager);
+            packsPager.setAdapter(new StickerPacksPagerAdapter(stickerAdapters));
+            TabLayout packsTab = findViewById(R.id.packs_tab);
+            packsTab.setupWithViewPager(packsPager);
+            packsTab.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+            for (int i = 0; i < packsTab.getTabCount(); i++) {
+                ImageView tabItemView = (ImageView) inflater.inflate(R.layout.tab_item, new LinearLayout(service), false);
+                if (i == 0) {
+                    tabItemView.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
+                } else if (!packs.get(i-1).getStickers().isEmpty()) {
+                    Sticker cover = packs.get(i-1).getStickers().get(0);
+                    if (cover != null) {
+                        Glide.with(service)
+                                .load(FileHelper.getStickerFile(service, cover))
+                                .apply(RequestOptions.fitCenterTransform())
+                                .error(Glide.with(service).load(android.R.drawable.stat_notify_error))
+                                .into(tabItemView);
+                    }
+
                 }
-
-                ViewPager packsPager = findViewById(R.id.packs_pager);
-                packsPager.setAdapter(new StickerPackPagerAdapter(stickerAdapters));
-                TabLayout packsTab = findViewById(R.id.packs_tab);
-                packsTab.setupWithViewPager(packsPager);
-                packsTab.setTabMode(TabLayout.MODE_SCROLLABLE);
-
-                for (int i = 0; i < packsTab.getTabCount(); i++) {
-                    ImageView tabItemView = (ImageView) inflater.inflate(R.layout.tab_item, new LinearLayout(service), false);
-                    if (i == 0) {
-                        tabItemView.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
-                    } else if (!packs.get(i-1).getStickers().isEmpty()) {
-                        Sticker cover = packs.get(i-1).getStickers().get(0);
-                        if (cover != null) {
-                            Glide.with(service)
-                                    .load(FileHelper.getStickerFile(service, cover))
-                                    .apply(RequestOptions.fitCenterTransform())
-                                    .error(Glide.with(service).load(android.R.drawable.stat_notify_error))
-                                    .into(tabItemView);
-                        }
-
-                    }
-                    TabLayout.Tab packTab = packsTab.getTabAt(i);
-                    if (packTab != null) {
-                        packTab.setCustomView(tabItemView);
-                    }
+                TabLayout.Tab packTab = packsTab.getTabAt(i);
+                if (packTab != null) {
+                    packTab.setCustomView(tabItemView);
                 }
             }
         };
@@ -162,7 +158,7 @@ public class StickerKeyboardView extends FrameLayout {
 
     private static class RefreshHistoryTask extends AsyncTask<Sticker, Void, Void> {
 
-        private Database db;
+        private final Database db;
 
         RefreshHistoryTask() {
             super();
