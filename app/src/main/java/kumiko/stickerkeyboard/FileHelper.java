@@ -49,7 +49,6 @@ public class FileHelper {
      * @param sticker Sticker object
      */
     static synchronized void saveStickerFrom(@NonNull Uri uri, @NonNull Sticker sticker) {
-        // TODO: 2019/2/28 stickerId.ext -> save to disk
         Context context = MyApplication.getAppContext();
         BufferedInputStream bufferedInputStream = null;
         BufferedOutputStream bufferedOutputStream = null;

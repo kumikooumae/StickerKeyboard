@@ -107,8 +107,7 @@ public class PackActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             // TODO: remove progress
-            // TODO: notify insert instead of notify dataset?
-            adapter.notifyDataSetChanged();
+            adapter.notifyItemInserted(pack.getStickers().size() - 1);
         }
     }
 }

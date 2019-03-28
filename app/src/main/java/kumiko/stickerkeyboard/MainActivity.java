@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            stickerPacksListAdapter.notifyDataSetChanged();
+            stickerPacksListAdapter.notifyItemInserted(packs.size() - 1);
         }
     }
 
