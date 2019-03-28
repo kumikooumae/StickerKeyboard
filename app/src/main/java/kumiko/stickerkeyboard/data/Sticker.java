@@ -6,9 +6,11 @@ import android.os.Parcelable;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
@@ -61,6 +63,10 @@ public class Sticker implements Parcelable {
     @TypeConverters(Sticker.class)
     public Type type;
 
+    @Ignore
+    @Nullable
+    public History history;
+
     public Sticker(@NonNull String fileName, int packId, @NonNull Type type) {
         this.fileName = fileName;
         this.packId = packId;
@@ -91,6 +97,15 @@ public class Sticker implements Parcelable {
     @NonNull
     public Type getType() {
         return type;
+    }
+
+    @Nullable
+    public History getHistory() {
+        return history;
+    }
+
+    public void setHistory(@Nullable History history) {
+        this.history = history;
     }
 
     private Sticker(Parcel in) {

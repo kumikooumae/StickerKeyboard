@@ -30,8 +30,6 @@ public abstract class Database extends RoomDatabase {
 
     private static final int MAX_HISTORIES = 50;
 
-    private List<History> histories;
-
     private List<Sticker> historyStickers;
 
     public static synchronized Database getInstance(@NonNull Context context) {
@@ -55,11 +53,13 @@ public abstract class Database extends RoomDatabase {
 
     @NonNull
     public synchronized List<Sticker> getHistoryStickersReversed() {
-        if (histories == null || historyStickers == null) {
-            histories = historyDao().getHistoriesReversed();
+        if (historyStickers == null) {
+            List<History> histories = historyDao().getHistoriesReversed();
             historyStickers = new ArrayList<>();
             for (History history: histories) {
-                historyStickers.add(Objects.requireNonNull(stickerDao().getSticker(history.getStickerId())));
+                Sticker historySticker = Objects.requireNonNull(stickerDao().getSticker(history.getStickerId()));
+                historySticker.setHistory(history);
+                historyStickers.add(historySticker);
             }
         }
         return historyStickers;
@@ -72,18 +72,17 @@ public abstract class Database extends RoomDatabase {
                 break;
             }
         }
-        if (histories.size() >= MAX_HISTORIES || historyStickers.size() >= MAX_HISTORIES) {
+        if (historyStickers.size() >= MAX_HISTORIES) {
             removeFromHistory(MAX_HISTORIES);
         }
         historyDao().insertHistory(new History(sticker.getId()));
-        histories.add(0, Objects.requireNonNull(historyDao().getLatestInsertedHistory()));
+        sticker.setHistory(historyDao().getLatestInsertedHistory());
         historyStickers.add(0, sticker);
     }
 
     private void removeFromHistory(int position) {
-        History removed = histories.remove(position);
-        historyStickers.remove(position);
-        historyDao().deleteHistory(removed);
+        Sticker removed = historyStickers.remove(position);
+        historyDao().deleteHistory(removed.getHistory());
     }
 
     public synchronized void addNewEmptyPack(@NonNull String name) {
