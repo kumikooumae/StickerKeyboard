@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import kumiko.stickerkeyboard.adapter.StickerPackEditorAdapter;
 import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.Sticker;
@@ -32,6 +33,8 @@ public class PackActivity extends AppCompatActivity {
     private static StickerPack pack;
 
     private static StickerPackEditorAdapter adapter;
+
+    private SwipeRefreshLayout refreshLayout;
 
     public static void startPackActivity(Context context, @NonNull StickerPack pack) {
         if (context instanceof Activity) {
@@ -49,6 +52,10 @@ public class PackActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         pack = getIntent().getParcelableExtra(EXTRA_PACK);
+
+        refreshLayout = findViewById(R.id.refresh_layout);
+        refreshLayout.setEnabled(false);
+        SaveStickersTask.setListener(getRefreshIndicatorListener());
 
         PackView packView = findViewById(R.id.pack_view);
         adapter = new StickerPackEditorAdapter(pack.getStickers());
@@ -85,9 +92,14 @@ public class PackActivity extends AppCompatActivity {
     }
 
     private static class SaveStickersTask extends AsyncTask<Uri, Void, Void> {
+
+        @Nullable private static Listener listener;
+
         @Override
         protected void onPreExecute() {
-            //TODO: show circular / progress bar
+            if (listener != null) {
+                listener.showIndicator();
+            }
         }
 
         @Override
@@ -106,8 +118,40 @@ public class PackActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            // TODO: remove progress
-            adapter.notifyItemInserted(pack.getStickers().size() - 1);
+            if (listener != null) {
+                listener.hideIndicator();
+                adapter.notifyItemInserted(pack.getStickers().size() - 1);
+            }
         }
+
+        static void setListener(@Nullable Listener listener) {
+            SaveStickersTask.listener = listener;
+        }
+
+        interface Listener {
+            void showIndicator();
+
+            void hideIndicator();
+        }
+    }
+
+    private SaveStickersTask.Listener getRefreshIndicatorListener() {
+        return new SaveStickersTask.Listener() {
+            @Override
+            public void showIndicator() {
+                refreshLayout.setRefreshing(true);
+            }
+
+            @Override
+            public void hideIndicator() {
+                refreshLayout.setRefreshing(false);
+            }
+        };
+    }
+
+    @Override
+    protected void onDestroy() {
+        SaveStickersTask.setListener(null);
+        super.onDestroy();
     }
 }

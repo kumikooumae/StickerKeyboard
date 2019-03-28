@@ -20,11 +20,18 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <kumiko.stickerkeyboard.view.PackView
-        android:id="@+id/pack_view"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <kumiko.stickerkeyboard.view.PackView
+            android:id="@+id/pack_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addStickerFab"
