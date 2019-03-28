@@ -49,7 +49,7 @@ public class StickerPacksListAdapter extends RecyclerView.Adapter<StickerPacksLi
     public PackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View cardView = Objects.requireNonNull(LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_pack_card, parent, false));
         final PackViewHolder holder = new PackViewHolder(cardView);
-        cardView.setOnClickListener(view -> PackActivity.startPackActivity(view.getContext(), packs.get(holder.getAdapterPosition())));
+        cardView.setOnClickListener(view -> PackActivity.startPackActivity(view.getContext(), holder.getAdapterPosition()));
         return holder;
     }
 

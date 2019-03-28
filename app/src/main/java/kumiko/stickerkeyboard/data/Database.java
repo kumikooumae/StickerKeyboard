@@ -93,20 +93,15 @@ public abstract class Database extends RoomDatabase {
     }
 
     @NonNull
-    public synchronized Sticker addNewSticker(int packId, @NonNull Sticker.Type type) {
+    public synchronized Sticker addNewSticker(int packPosition, @NonNull Sticker.Type type) {
         // fileName is unused
+        StickerPack pack = packs.get(packPosition);
         sqldb.execSQL("INSERT INTO " + Sticker.TABLE_NAME
                 + "(" + Sticker.FILE_NAME + "," + Sticker.PACK_ID + "," + Sticker.POSITION + "," + Sticker.TYPE + ") "
-                + "VALUES ('', " + packId + ", (SELECT IFNULL(MAX(" + Sticker.ID + "), 0) FROM " + Sticker.TABLE_NAME + ") + 1, " + type.ordinal() +")");
+                + "VALUES ('', " + pack.getId() + ", (SELECT IFNULL(MAX(" + Sticker.ID + "), 0) FROM " + Sticker.TABLE_NAME + ") + 1, " + type.ordinal() +")");
         Sticker sticker = Objects.requireNonNull(stickerDao().getLatestInsertedSticker());
-        for (int i = 0; i < packs.size(); i++) {
-            StickerPack pack = packs.get(i);
-            if (pack.getId() == packId) {
-                pack.getStickers().add(sticker);
-                IMEService.notifyStickerPackUpdated(MyApplication.getAppContext(), i);
-                break;
-            }
-        }
+        pack.getStickers().add(sticker);
+        IMEService.notifyStickerPackUpdated(MyApplication.getAppContext(), packPosition);
         return sticker;
     }
 }

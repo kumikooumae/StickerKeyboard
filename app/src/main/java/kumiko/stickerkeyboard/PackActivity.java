@@ -26,20 +26,22 @@ import kumiko.stickerkeyboard.view.PackView;
 
 public class PackActivity extends AppCompatActivity {
 
-    private static final String EXTRA_PACK = "kumiko.stickerkeyboard.extra.PACK";
+    private static final String EXTRA_PACK_POSITION = "kumiko.stickerkeyboard.extra.PACK_POSITION";
 
     private static final int DOC_REQUEST_CODE = 1;
 
     private static StickerPack pack;
 
+    private int packPosition;
+
     private static StickerPackEditorAdapter adapter;
 
     private SwipeRefreshLayout refreshLayout;
 
-    public static void startPackActivity(Context context, @NonNull StickerPack pack) {
+    public static void startPackActivity(Context context, int packPosition) {
         if (context instanceof Activity) {
             Intent intent = new Intent(context, PackActivity.class);
-            intent.putExtra(EXTRA_PACK, pack);
+            intent.putExtra(EXTRA_PACK_POSITION, packPosition);
             ((Activity) context).startActivityForResult(intent, MainActivity.STICKER_PACK_UPDATED_REQUEST_CODE);
         }
     }
@@ -51,7 +53,8 @@ public class PackActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pack = getIntent().getParcelableExtra(EXTRA_PACK);
+        packPosition = getIntent().getIntExtra(EXTRA_PACK_POSITION, 0);
+        pack = Database.getInstance(this).getAllStickerPacks().get(packPosition);
 
         refreshLayout = findViewById(R.id.refresh_layout);
         refreshLayout.setEnabled(false);
@@ -86,7 +89,7 @@ public class PackActivity extends AppCompatActivity {
             } else {
                 uris.add(data.getData());
             }
-            new SaveStickersTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, uris.toArray(new Uri[0]));
+            new SaveStickersTask(packPosition).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, uris.toArray(new Uri[0]));
             setResult(RESULT_OK);
         }
     }
@@ -94,6 +97,13 @@ public class PackActivity extends AppCompatActivity {
     private static class SaveStickersTask extends AsyncTask<Uri, Void, Void> {
 
         @Nullable private static Listener listener;
+
+        private int packPosition;
+
+        SaveStickersTask(int packPosition) {
+            super();
+            this.packPosition = packPosition;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -108,10 +118,8 @@ public class PackActivity extends AppCompatActivity {
             Database db = Database.getInstance(context);
             for (Uri uri: uris) {
                 String mimeType = context.getContentResolver().getType(uri);
-                // TODO: you can pass in StickerPack to db.addNewSticker() so that no need to traverse
-                Sticker sticker = db.addNewSticker(pack.getId(), FileHelper.getStickerType(mimeType));
+                Sticker sticker = db.addNewSticker(packPosition, FileHelper.getStickerType(mimeType));
                 FileHelper.saveStickerFrom(uri, sticker);
-                pack.getStickers().add(sticker);
             }
             return null;
         }
