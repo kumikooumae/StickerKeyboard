@@ -1,10 +1,5 @@
 package kumiko.stickerkeyboard.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.util.Objects;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
@@ -26,7 +21,7 @@ import static androidx.room.ForeignKey.CASCADE;
             onDelete = CASCADE,
             onUpdate = CASCADE),
         indices = {@Index(Sticker.PACK_ID)})
-public class Sticker implements Parcelable {
+public class Sticker {
 
     static final String TABLE_NAME = "stickers";
 
@@ -111,40 +106,6 @@ public class Sticker implements Parcelable {
     void setHistory(@Nullable History history) {
         this.history = history;
     }
-
-    private Sticker(Parcel in) {
-        id = in.readLong();
-        fileName = Objects.requireNonNull(in.readString());
-        packId = in.readLong();
-        position = in.readInt();
-        type = (Type) Objects.requireNonNull(in.readSerializable());
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeLong(id);
-        out.writeString(fileName);
-        out.writeLong(packId);
-        out.writeInt(position);
-        out.writeSerializable(type);
-    }
-
-    public static final Parcelable.Creator<Sticker> CREATOR = new Parcelable.Creator<Sticker>() {
-        @Override
-        public Sticker createFromParcel(Parcel in) {
-            return new Sticker(in);
-        }
-
-        @Override
-        public Sticker[] newArray(int size) {
-            return new Sticker[size];
-        }
-    };
 
     @TypeConverter
     public static Type fromOrdinal(int ordinal) {
