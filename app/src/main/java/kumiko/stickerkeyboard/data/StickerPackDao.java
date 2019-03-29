@@ -11,7 +11,7 @@ import androidx.room.Update;
 @Dao
 public interface StickerPackDao {
     @Insert
-    void insertStickerPack(StickerPack stickerPack);
+    long insertStickerPack(StickerPack stickerPack);
 
     @Update
     void updateStickerPack(StickerPack stickerPack);
@@ -26,14 +26,4 @@ public interface StickerPackDao {
      */
     @Query("SELECT * FROM " + StickerPack.TABLE_NAME)
     List<StickerPack> getAllStickerPacks();
-
-    /**
-     * Get latest inserted sticker pack.
-     * Call this immediately after insertion to get its rowid.
-     * Do not reuse dummy object for insertion, whose rowid is initialized as 0.
-     *
-     * @return Latest inserted sticker pack. Nullable.
-     */
-    @Query("SELECT * FROM " + StickerPack.TABLE_NAME + " ORDER BY " + StickerPack.ID + " DESC LIMIT 1")
-    StickerPack getLastStickerPack();
 }

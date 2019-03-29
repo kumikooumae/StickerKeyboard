@@ -24,11 +24,11 @@ public class StickerPack implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ID)
-    public int id;
+    private long id;
 
     @NonNull
     @ColumnInfo(name = NAME)
-    public String name;
+    private String name;
 
     @NonNull
     @Ignore
@@ -40,14 +40,14 @@ public class StickerPack implements Parcelable {
     }
 
     private StickerPack(Parcel in) {
-        id = in.readInt();
+        id = in.readLong();
         name = Objects.requireNonNull(in.readString());
         stickers = Objects.requireNonNull(in.createTypedArrayList(Sticker.CREATOR));
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeString(name);
         dest.writeTypedList(stickers);
     }
@@ -69,8 +69,12 @@ public class StickerPack implements Parcelable {
         }
     };
 
-    public int getId() {
+    long getId() {
         return id;
+    }
+
+    void setId(long id) {
+        this.id = id;
     }
 
     @NonNull

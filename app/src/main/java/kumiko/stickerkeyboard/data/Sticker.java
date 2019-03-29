@@ -46,43 +46,47 @@ public class Sticker implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ID)
-    public int id;
+    private long id;
 
     @NonNull
     @ColumnInfo(name = FILE_NAME)
-    public String fileName;
+    private String fileName;
 
     @ColumnInfo(name = PACK_ID)
-    public int packId;
+    private final long packId;
 
     @ColumnInfo(name = POSITION)
-    public int position;
+    private int position;
 
     @NonNull
     @ColumnInfo(name = TYPE)
     @TypeConverters(Sticker.class)
-    public Type type;
+    private final Type type;
 
     @Ignore
     @Nullable
-    public History history;
+    private History history;
 
-    public Sticker(@NonNull String fileName, int packId, @NonNull Type type) {
+    Sticker(@NonNull String fileName, long packId, @NonNull Type type) {
         this.fileName = fileName;
         this.packId = packId;
         this.type = type;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
+    void setId(long id) {
+        this.id = id;
+    }
+
     @NonNull
-    public String getFileName() {
+    String getFileName() {
         return fileName;
     }
 
-    public int getPackId() {
+    public long getPackId() {
         return packId;
     }
 
@@ -100,18 +104,18 @@ public class Sticker implements Parcelable {
     }
 
     @Nullable
-    public History getHistory() {
+    History getHistory() {
         return history;
     }
 
-    public void setHistory(@Nullable History history) {
+    void setHistory(@Nullable History history) {
         this.history = history;
     }
 
     private Sticker(Parcel in) {
-        id = in.readInt();
+        id = in.readLong();
         fileName = Objects.requireNonNull(in.readString());
-        packId = in.readInt();
+        packId = in.readLong();
         position = in.readInt();
         type = (Type) Objects.requireNonNull(in.readSerializable());
     }
@@ -123,9 +127,9 @@ public class Sticker implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(id);
+        out.writeLong(id);
         out.writeString(fileName);
-        out.writeInt(packId);
+        out.writeLong(packId);
         out.writeInt(position);
         out.writeSerializable(type);
     }

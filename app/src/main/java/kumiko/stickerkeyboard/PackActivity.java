@@ -98,7 +98,7 @@ public class PackActivity extends AppCompatActivity {
 
         @Nullable private static Listener listener;
 
-        private int packPosition;
+        private final int packPosition;
 
         SaveStickersTask(int packPosition) {
             super();

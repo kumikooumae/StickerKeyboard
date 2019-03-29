@@ -15,26 +15,35 @@ import static androidx.room.ForeignKey.CASCADE;
                 onDelete = CASCADE,
                 onUpdate = CASCADE
         ))
-public class History {
+class History {
 
     static final String TABLE_NAME = "history";
 
     static final String ID = "id";
 
+    @SuppressWarnings("WeakerAccess")
     static final String STICKER_ID = "sticker_id";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = ID)
-    public int id;
+    private long id;
 
     @ColumnInfo(name = STICKER_ID)
-    public int stickerId;
+    private final long stickerId;
 
-    public History(int stickerId) {
+    History(long stickerId) {
         this.stickerId = stickerId;
     }
 
-    public int getStickerId() {
+    long getId() {
+        return id;
+    }
+
+    void setId(long id) {
+        this.id = id;
+    }
+
+    long getStickerId() {
         return stickerId;
     }
 }

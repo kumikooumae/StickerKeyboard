@@ -6,12 +6,11 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
 
 @Dao
 public interface HistoryDao {
     @Insert
-    void insertHistory(History history);
+    long insertHistory(History history);
 
     @Delete
     void deleteHistory(History history);
@@ -23,14 +22,4 @@ public interface HistoryDao {
      */
     @Query("SELECT * FROM " + History.TABLE_NAME + " ORDER BY " + History.ID + " DESC")
     List<History> getHistoriesReversed();
-
-    /**
-     * Get latest inserted sticker.
-     * Call this immediately after insertion to get its rowid.
-     * Do not reuse dummy object for insertion, whose rowid is initialized as 0.
-     *
-     * @return Latest inserted history. Nullable.
-     */
-    @Query("SELECT * FROM " + History.TABLE_NAME + " ORDER BY " + History.ID + " DESC LIMIT 1")
-    History getLatestInsertedHistory();
 }

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.sqlite.db.SupportSQLiteStatement;
 import kumiko.stickerkeyboard.IMEService;
 import kumiko.stickerkeyboard.MyApplication;
 
@@ -75,8 +76,9 @@ public abstract class Database extends RoomDatabase {
         if (historyStickers.size() >= MAX_HISTORIES) {
             removeFromHistory(MAX_HISTORIES);
         }
-        historyDao().insertHistory(new History(sticker.getId()));
-        sticker.setHistory(historyDao().getLatestInsertedHistory());
+        History history = new History(sticker.getId());
+        history.setId(historyDao().insertHistory(history));
+        sticker.setHistory(history);
         historyStickers.add(0, sticker);
     }
 
@@ -86,8 +88,9 @@ public abstract class Database extends RoomDatabase {
     }
 
     public synchronized void addNewEmptyPack(@NonNull String name) {
-        stickerPackDao().insertStickerPack(new StickerPack(name));
-        packs.add(Objects.requireNonNull(stickerPackDao().getLastStickerPack()));
+        StickerPack pack = new StickerPack(name);
+        pack.setId(stickerPackDao().insertStickerPack(pack));
+        packs.add(pack);
         IMEService.notifyPacksListUpdated(MyApplication.getAppContext());
     }
 
@@ -95,10 +98,14 @@ public abstract class Database extends RoomDatabase {
     public synchronized Sticker addNewSticker(int packPosition, @NonNull Sticker.Type type) {
         // fileName is unused
         StickerPack pack = packs.get(packPosition);
-        sqldb.execSQL("INSERT INTO " + Sticker.TABLE_NAME
+        Sticker sticker = new Sticker("", pack.getId(), type);
+        SupportSQLiteStatement statement = sqldb.compileStatement("INSERT INTO " + Sticker.TABLE_NAME
                 + "(" + Sticker.FILE_NAME + "," + Sticker.PACK_ID + "," + Sticker.POSITION + "," + Sticker.TYPE + ") "
-                + "VALUES ('', " + pack.getId() + ", (SELECT IFNULL(MAX(" + Sticker.ID + "), 0) FROM " + Sticker.TABLE_NAME + ") + 1, " + type.ordinal() +")");
-        Sticker sticker = Objects.requireNonNull(stickerDao().getLatestInsertedSticker());
+                + "VALUES (?, ?, (SELECT IFNULL(MAX(" + Sticker.ID + "), 0) FROM " + Sticker.TABLE_NAME + ") + 1, ?)");
+        statement.bindString(1, "");
+        statement.bindLong(2, pack.getId());
+        statement.bindLong(3, type.ordinal());
+        sticker.setId(statement.executeInsert());
         pack.getStickers().add(sticker);
         IMEService.notifyStickerPackUpdated(MyApplication.getAppContext(), packPosition);
         return sticker;

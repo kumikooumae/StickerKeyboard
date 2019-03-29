@@ -39,7 +39,7 @@ public class FileHelper {
 
     @NonNull
     public static File getStickerFile(@NonNull Context context, @NonNull Sticker sticker) {
-        return new File(new File(new File(context.getFilesDir(), STICKER_DIR), Integer.toString(sticker.getPackId())), getStickerFileName(sticker));
+        return new File(new File(new File(context.getFilesDir(), STICKER_DIR), Long.toString(sticker.getPackId())), getStickerFileName(sticker));
     }
 
     /**
@@ -119,7 +119,7 @@ public class FileHelper {
                 ext = "";
                 break;
         }
-        return Integer.toString(sticker.getId()) + ext;
+        return Long.toString(sticker.getId()) + ext;
     }
 
     @NonNull
