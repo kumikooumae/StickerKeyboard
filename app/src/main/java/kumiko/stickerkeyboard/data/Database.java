@@ -16,7 +16,7 @@ import kumiko.stickerkeyboard.IMEService;
 import kumiko.stickerkeyboard.MyApplication;
 
 @androidx.room.Database(entities = {
-        Sticker.class, StickerPack.class, History.class,
+        Sticker.class, StickerPack.class, History.class, Favourite.class,
         StickerDescription.class, PackDescription.class,
         Tag.class, TagName.class, StickerTag.class, PackTag.class,
         Author.class, AuthorName.class, AuthorContact.class, StickerAuthor.class, PackAuthor.class}, version = 1, exportSchema = false)
