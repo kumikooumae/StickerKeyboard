@@ -8,4 +8,5 @@
     <string name="history_pack_name">History</string>
     <string name="add_pack">Add pack</string>
     <string name="pack_name">Pack name</string>
+    <string name="title_activity_info">InfoActivity</string>
 </resources>

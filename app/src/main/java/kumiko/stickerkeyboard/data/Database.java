@@ -1,6 +1,7 @@
 package kumiko.stickerkeyboard.data;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,11 @@ import androidx.sqlite.db.SupportSQLiteStatement;
 import kumiko.stickerkeyboard.IMEService;
 import kumiko.stickerkeyboard.MyApplication;
 
-@androidx.room.Database(entities = {Sticker.class, StickerPack.class, History.class}, version = 1)
+@androidx.room.Database(entities = {
+        Sticker.class, StickerPack.class, History.class,
+        StickerDescription.class, PackDescription.class,
+        Tag.class, TagName.class, StickerTag.class, PackTag.class,
+        Author.class, AuthorName.class, AuthorContact.class, StickerAuthor.class, PackAuthor.class}, version = 1, exportSchema = false)
 public abstract class Database extends RoomDatabase {
 
     public abstract StickerDao stickerDao();
@@ -22,6 +27,24 @@ public abstract class Database extends RoomDatabase {
     public abstract StickerPackDao stickerPackDao();
 
     public abstract HistoryDao historyDao();
+
+    public abstract TagNameDao tagNameDao();
+
+    public abstract StickerTagDao stickerTagDao();
+
+    public abstract PackTagDao packTagDao();
+
+    public abstract StickerDescriptionDao stickerDescriptionDao();
+
+    public abstract PackDescriptionDao packDescriptionDao();
+
+    public abstract StickerAuthorDao stickerAuthorDao();
+
+    public abstract PackAuthorDao packAuthorDao();
+
+    public abstract AuthorNameDao authorNameDao();
+
+    public abstract AuthorContactDao authorContactDao();
 
     private static Database instance;
 
@@ -109,5 +132,78 @@ public abstract class Database extends RoomDatabase {
         pack.getStickers().add(sticker);
         IMEService.notifyStickerPackUpdated(MyApplication.getAppContext(), packPosition);
         return sticker;
+    }
+
+    public synchronized String getTags(Sticker sticker) {
+        List<Tag> tags = stickerTagDao().getTags(sticker.getId());
+        return fillTags(tags);
+    }
+
+    public synchronized String getTags(StickerPack pack) {
+        List<Tag> tags = packTagDao().getTags(pack.getId());
+        return fillTags(tags);
+    }
+
+    private synchronized String fillTags(List<Tag> tags) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Tag tag: tags) {
+            List<TagName> tagNames = tagNameDao().getTagNames(tag.getId());
+            List<String> names = new ArrayList<>();
+            for (TagName tagName: tagNames) {
+                names.add(tagName.getName());
+            }
+            stringBuilder.append(TextUtils.join(",", names));
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
+    public synchronized String getDescriptions(Sticker sticker) {
+        List<StickerDescription> stickerDescriptions = stickerDescriptionDao().getDescriptions(sticker.getId());
+        List<String> strings = new ArrayList<>();
+        for (StickerDescription stickerDescription: stickerDescriptions) {
+            strings.add(stickerDescription.getDescription());
+        }
+        return TextUtils.join("\n", strings);
+    }
+
+    public synchronized String getDescriptions(StickerPack stickerPack) {
+        List<PackDescription> packDescriptions = packDescriptionDao().getDescriptions(stickerPack.getId());
+        List<String> strings = new ArrayList<>();
+        for (PackDescription packDescription: packDescriptions) {
+            strings.add(packDescription.getDescription());
+        }
+        return TextUtils.join("\n", strings);
+    }
+
+    public synchronized String getAuthors(Sticker sticker) {
+        List<Author> authors = stickerAuthorDao().getAuthors(sticker.getId());
+        return fillAuthors(authors);
+    }
+
+    public synchronized String getAuthors(StickerPack stickerPack) {
+        List<Author> authors = packAuthorDao().getAuthors(stickerPack.getId());
+        return fillAuthors(authors);
+    }
+
+    private synchronized String fillAuthors(List<Author> authors) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Author author: authors) {
+            List<AuthorName> authorNames = authorNameDao().getAuthorNames(author.getId());
+            List<String> names = new ArrayList<>();
+            for (AuthorName authorName: authorNames) {
+                names.add(authorName.getName());
+            }
+            stringBuilder.append(TextUtils.join(",", names));
+            stringBuilder.append("\n");
+            List<AuthorContact> authorContacts = authorContactDao().getAuthorContacts(author.getId());
+            List<String> contacts = new ArrayList<>();
+            for (AuthorContact authorContact: authorContacts) {
+                contacts.add(authorContact.getContact());
+            }
+            stringBuilder.append(TextUtils.join(",", contacts));
+            stringBuilder.append("\n\n");
+        }
+        return stringBuilder.toString();
     }
 }
