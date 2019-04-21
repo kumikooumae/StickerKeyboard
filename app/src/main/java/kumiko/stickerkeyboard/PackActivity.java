@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,7 +63,7 @@ public class PackActivity extends AppCompatActivity {
         SaveStickersTask.setListener(getRefreshIndicatorListener());
 
         PackView packView = findViewById(R.id.pack_view);
-        adapter = new StickerPackEditorAdapter(pack.getStickers());
+        adapter = new StickerPackEditorAdapter(pack.getStickers(), packPosition);
         packView.setAdapter(adapter);
         FloatingActionButton addStickerFab = findViewById(R.id.addStickerFab);
         addStickerFab.setOnClickListener(view -> {
@@ -155,6 +157,23 @@ public class PackActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false);
             }
         };
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.pack, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.pack_info:
+                InfoActivity.startInfoActivity(this, packPosition);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

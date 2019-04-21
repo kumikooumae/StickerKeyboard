@@ -3,14 +3,20 @@ package kumiko.stickerkeyboard.adapter;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.view.ViewGroup;
 import java.util.List;
+
+import kumiko.stickerkeyboard.InfoActivity;
 import kumiko.stickerkeyboard.data.Sticker;
 
 public class StickerPackEditorAdapter extends StickerPackBaseAdapter {
 
-    public StickerPackEditorAdapter(@NonNull List<Sticker> stickers) {
+    private int packPosition;
+
+    public StickerPackEditorAdapter(@NonNull List<Sticker> stickers, int packPosition) {
         super(stickers);
+        this.packPosition = packPosition;
     }
 
     @NonNull
@@ -19,6 +25,9 @@ public class StickerPackEditorAdapter extends StickerPackBaseAdapter {
         final StickerViewHolder holder = createStickerViewHolder(parent);
         holder.sticker.setOnClickListener(view -> {
             // Pop up, share
+            if (parent.getContext() instanceof Activity) {
+                InfoActivity.startInfoActivity((Activity) parent.getContext(), packPosition, holder.getAdapterPosition());
+            }
         });
         holder.sticker.setOnLongClickListener(view -> {
             // Edit

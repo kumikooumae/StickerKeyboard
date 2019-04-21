@@ -49,7 +49,7 @@ public class InfoActivity extends AppCompatActivity {
         activity.startActivity(intent);
     }
 
-    static void startInfoActivity(Activity activity, int packPosition, int stickerPosition) {
+    public static void startInfoActivity(Activity activity, int packPosition, int stickerPosition) {
         Intent intent = new Intent(activity, InfoActivity.class);
         intent.putExtra(EXTRA_TYPE, TYPE_STICKER);
         intent.putExtra(EXTRA_PACK_POSITION, packPosition);
