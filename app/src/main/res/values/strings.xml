@@ -6,6 +6,7 @@
 
     <string name="language_switch_key">Switch language</string>
     <string name="history_pack_name">History</string>
+    <string name="favourite_pack_name">Favourite</string>
     <string name="add_pack">Add pack</string>
     <string name="pack_name">Pack name</string>
     <string name="info">Info</string>

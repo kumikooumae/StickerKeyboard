@@ -5,10 +5,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import java.util.List;
 
+import kumiko.stickerkeyboard.IMEService;
 import kumiko.stickerkeyboard.InfoActivity;
+import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.Sticker;
+import kumiko.stickerkeyboard.view.StickerKeyboardView;
 
 public class StickerPackEditorAdapter extends StickerPackBaseAdapter {
 
@@ -31,7 +36,16 @@ public class StickerPackEditorAdapter extends StickerPackBaseAdapter {
         });
         holder.sticker.setOnLongClickListener(view -> {
             // Edit
-            return false;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Database db = Database.getInstance(parent.getContext());
+                    db.addFavourite(getSticker(holder.getAdapterPosition()));
+                    IMEService.notifyFavouriteUpdated(parent.getContext());
+                }
+            }).start();
+            Toast.makeText(parent.getContext(), "Added to favourite", Toast.LENGTH_SHORT).show();
+            return true;
         });
         return holder;
     }

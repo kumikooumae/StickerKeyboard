@@ -42,6 +42,8 @@ public class StickerKeyboardView extends FrameLayout {
 
     private static StickerPackKeyboardAdapter historyAdapter;
 
+    private static StickerPackKeyboardAdapter favouriteAdapter;
+
     private GetStickerPacksTask getStickerPacksTask;
 
     public StickerKeyboardView(@NonNull Context context) {
@@ -73,6 +75,12 @@ public class StickerKeyboardView extends FrameLayout {
         new RefreshHistoryTask().execute(sticker);
     }
 
+    public void refreshFavourite() {
+        if (favouriteAdapter != null) {
+            favouriteAdapter.notifyDataSetChanged();
+        }
+    }
+
     public void loadPacks() {
         getStickerPacksTask = new GetStickerPacksTask();
         getStickerPacksTask.setListener(getOnLoadedStickerPacksListener());
@@ -80,7 +88,7 @@ public class StickerKeyboardView extends FrameLayout {
     }
 
     public void refreshPack(int position) {
-        stickerAdapters.get(position+1).notifyDataSetChanged();
+        stickerAdapters.get(position+2).notifyDataSetChanged();
     }
 
     private static class GetStickerPacksTask extends AsyncTask<Void, Void, Void> {
@@ -91,6 +99,8 @@ public class StickerKeyboardView extends FrameLayout {
 
         private StickerPack historyPack;
 
+        private StickerPack favouritePack;
+
         @Override
         protected Void doInBackground(Void... params) {
             Context appContext = MyApplication.getAppContext();
@@ -98,13 +108,15 @@ public class StickerKeyboardView extends FrameLayout {
             packs = db.getAllStickerPacks();
             historyPack = new StickerPack(appContext.getResources().getString(R.string.history_pack_name));
             historyPack.setStickers(db.getHistoryStickersReversed());
+            favouritePack = new StickerPack(appContext.getResources().getString(R.string.favourite_pack_name));
+            favouritePack.setStickers(db.getFavouriteStickers());
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             if (listener != null) {
-                listener.onFinish(packs, historyPack);
+                listener.onFinish(packs, historyPack, favouritePack);
             }
         }
 
@@ -113,16 +125,18 @@ public class StickerKeyboardView extends FrameLayout {
         }
 
         interface Listener {
-            void onFinish(@NonNull List<StickerPack> packs, @NonNull StickerPack historyPack);
+            void onFinish(@NonNull List<StickerPack> packs, @NonNull StickerPack historyPack, @NonNull StickerPack favouritePack);
         }
     }
 
     @NonNull
     private GetStickerPacksTask.Listener getOnLoadedStickerPacksListener() {
-        return (packs, historyPack) -> {
+        return (packs, historyPack, favouritePack) -> {
             historyAdapter = new StickerPackKeyboardAdapter(historyPack.getStickers(), historyPack.getName());
+            favouriteAdapter = new StickerPackKeyboardAdapter(favouritePack.getStickers(), favouritePack.getName());
             stickerAdapters = new ArrayList<>();
             stickerAdapters.add(historyAdapter);
+            stickerAdapters.add(favouriteAdapter);
             for (StickerPack pack: packs) {
                 stickerAdapters.add(new StickerPackKeyboardAdapter(pack.getStickers(), pack.getName()));
             }
@@ -136,9 +150,11 @@ public class StickerKeyboardView extends FrameLayout {
             for (int i = 0; i < packsTab.getTabCount(); i++) {
                 ImageView tabItemView = (ImageView) inflater.inflate(R.layout.tab_item, new LinearLayout(service), false);
                 if (i == 0) {
-                    tabItemView.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_recent_history));
-                } else if (!packs.get(i-1).getStickers().isEmpty()) {
-                    Sticker cover = packs.get(i-1).getStickers().get(0);
+                    tabItemView.setImageDrawable(getResources().getDrawable(R.drawable.baseline_history_black_48));
+                } else if (i == 1) {
+                    tabItemView.setImageDrawable(getResources().getDrawable(R.drawable.baseline_favorite_black_48));
+                } else if (!packs.get(i-2).getStickers().isEmpty()) {
+                    Sticker cover = packs.get(i-2).getStickers().get(0);
                     if (cover != null) {
                         Glide.with(service)
                                 .load(FileHelper.getStickerFile(service, cover))

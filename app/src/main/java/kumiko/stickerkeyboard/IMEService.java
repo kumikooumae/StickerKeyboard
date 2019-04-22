@@ -29,6 +29,8 @@ public class IMEService extends InputMethodService {
 
     private static final String ACTION_STICKER_PACK_UPDATED = "kumiko.stickerkeyboard.ACTION_STICKER_PACK_UPDATED";
 
+    private static final String ACTION_FAVOURITE_UPDATED = "kumiko.stickerkeyboard.ACTION_FAVOURITE_UPDATED";
+
     private static final String EXTRA_PACK_POSITION = "kumiko.stickerkeyboard.extra.PACK_POSITION";
 
     private static final String TAG = "IMEService";
@@ -86,6 +88,11 @@ public class IMEService extends InputMethodService {
         localBroadcastManager.sendBroadcast(intent);
     }
 
+    public static void notifyFavouriteUpdated(@NonNull Context context) {
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        localBroadcastManager.sendBroadcast(new Intent(ACTION_FAVOURITE_UPDATED));
+    }
+
     @Override
     public void onCreate() {
         this.setTheme(R.style.AppTheme);    // Theme must be set before onCreate
@@ -95,6 +102,7 @@ public class IMEService extends InputMethodService {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_PACKS_LIST_UPDATED);
         intentFilter.addAction(ACTION_STICKER_PACK_UPDATED);
+        intentFilter.addAction(ACTION_FAVOURITE_UPDATED);
         stickerUpdateReceiver = new StickerUpdateReceiver();
         localBroadcastManager.registerReceiver(stickerUpdateReceiver, intentFilter);
     }
@@ -114,6 +122,8 @@ public class IMEService extends InputMethodService {
                     stickerKeyboardView.loadPacks();
                 } else if (ACTION_STICKER_PACK_UPDATED.equals(intent.getAction())) {
                     stickerKeyboardView.refreshPack(intent.getIntExtra(EXTRA_PACK_POSITION, 0));
+                } else if (ACTION_FAVOURITE_UPDATED.equals(intent.getAction())) {
+                    stickerKeyboardView.refreshFavourite();
                 }
             }
         }

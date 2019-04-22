@@ -28,6 +28,8 @@ public abstract class Database extends RoomDatabase {
 
     public abstract HistoryDao historyDao();
 
+    public abstract FavouriteDao favouriteDao();
+
     public abstract TagNameDao tagNameDao();
 
     public abstract StickerTagDao stickerTagDao();
@@ -55,6 +57,8 @@ public abstract class Database extends RoomDatabase {
     private static final int MAX_HISTORIES = 50;
 
     private List<Sticker> historyStickers;
+
+    private List<Sticker> favouriteStickers;
 
     public static synchronized Database getInstance(@NonNull Context context) {
         if (instance == null) {
@@ -108,6 +112,29 @@ public abstract class Database extends RoomDatabase {
     private void removeFromHistory(int position) {
         Sticker removed = historyStickers.remove(position);
         historyDao().deleteHistory(removed.getHistory());
+    }
+
+    public synchronized List<Sticker> getFavouriteStickers() {
+        if (favouriteStickers == null) {
+            List<Favourite> favourites = favouriteDao().getAllFavourites();
+            favouriteStickers = new ArrayList<>();
+            for (Favourite favourite: favourites) {
+                Sticker favouriteSticker = Objects.requireNonNull(stickerDao().getSticker(favourite.getStickerId()));
+                //setfavourite
+                favouriteStickers.add(favouriteSticker);
+            }
+        }
+        return favouriteStickers;
+    }
+
+    public synchronized void addFavourite(@NonNull Sticker sticker) {
+        for (Sticker sticker1: getFavouriteStickers()) {
+            if (sticker1.getId() == sticker.getId()) {
+                return;
+            }
+        }
+        favouriteDao().insertFavourite(new Favourite(sticker.getId()));
+        favouriteStickers.add(sticker);
     }
 
     public synchronized void addNewEmptyPack(@NonNull String name) {

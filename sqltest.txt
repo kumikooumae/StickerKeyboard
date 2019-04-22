@@ -1,0 +1,61 @@
+INSERT INTO tag (id) VALUES (null);
+INSERT INTO tag (id) VALUES (null);
+INSERT INTO tag (id) VALUES (null);
+
+INSERT INTO tag_name (tag,name) VALUES (1,"tag1");
+INSERT INTO tag_name (tag,name) VALUES (1,"标签1");
+INSERT INTO tag_name (tag,name) VALUES (2,"tag2");
+INSERT INTO tag_name (tag,name) VALUES (2,"标签2");
+INSERT INTO tag_name (tag,name) VALUES (3,"标签3");
+
+INSERT INTO sticker_tag (sticker,tag) VALUES (1,1);
+INSERT INTO sticker_tag (sticker,tag) VALUES (1,2);
+INSERT INTO sticker_tag (sticker,tag) VALUES (2,2);
+INSERT INTO sticker_tag (sticker,tag) VALUES (3,3);
+INSERT INTO sticker_tag (sticker,tag) VALUES (4,1);
+
+INSERT INTO pack_tag (pack,tag) VALUES (1,1);
+INSERT INTO pack_tag (pack,tag) VALUES (2,2);
+INSERT INTO pack_tag (pack,tag) VALUES (2,3);
+INSERT INTO pack_tag (pack,tag) VALUES (3,3);
+
+INSERT INTO author (id) VALUES (null);
+INSERT INTO author (id) VALUES (null);
+INSERT INTO author (id) VALUES (null);
+
+INSERT INTO author_name (author,name) VALUES (1,"catcat");
+INSERT INTO author_name (author,name) VALUES (1,"阿猫");
+INSERT INTO author_name (author,name) VALUES (2,"dogdog");
+INSERT INTO author_name (author,name) VALUES (2,"阿狗");
+INSERT INTO author_name (author,name) VALUES (3,"阿鸡");
+
+INSERT INTO author_contact (author,contact) VALUES (1,"ysxu@cuhk.edu.cn");
+INSERT INTO author_contact (author,contact) VALUES (1,"0755-88887777");
+INSERT INTO author_contact (author,contact) VALUES (2,"337845818");
+INSERT INTO author_contact (author,contact) VALUES (2,"13800138000");
+INSERT INTO author_contact (author,contact) VALUES (3,"https://t.me/pill_lgu");
+
+INSERT INTO sticker_author (sticker,author) VALUES (1,1);
+INSERT INTO sticker_author (sticker,author) VALUES (1,2);
+INSERT INTO sticker_author (sticker,author) VALUES (2,1);
+INSERT INTO sticker_author (sticker,author) VALUES (3,3);
+INSERT INTO sticker_author (sticker,author) VALUES (4,2);
+INSERT INTO sticker_author (sticker,author) VALUES (4,3);
+
+INSERT INTO pack_author (pack,author) VALUES (1,1);
+INSERT INTO pack_author (pack,author) VALUES (1,3);
+INSERT INTO pack_author (pack,author) VALUES (2,2);
+INSERT INTO pack_author (pack,author) VALUES (3,1);
+
+INSERT INTO sticker_description (sticker,description) VALUES (1,"flying");
+INSERT INTO sticker_description (sticker,description) VALUES (1,"飞了");
+INSERT INTO sticker_description (sticker,description) VALUES (2,"hungry");
+INSERT INTO sticker_description (sticker,description) VALUES (2,"流口水");
+INSERT INTO sticker_description (sticker,description) VALUES (3,"reading");
+INSERT INTO sticker_description (sticker,description) VALUES (3,"看书");
+
+INSERT INTO pack_description (pack,description) VALUES (1,"yurucamp");
+INSERT INTO pack_description (pack,description) VALUES (1,"摇曳露营");
+INSERT INTO pack_description (pack,description) VALUES (2,"yuruyuri");
+INSERT INTO pack_description (pack,description) VALUES (2,"摇曳百合");
+INSERT INTO pack_description (pack,description) VALUES (3,"my sticker");
