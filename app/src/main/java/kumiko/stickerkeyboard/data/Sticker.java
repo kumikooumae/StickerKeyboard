@@ -62,6 +62,10 @@ public class Sticker {
     @Nullable
     private History history;
 
+    @Ignore
+    @Nullable
+    private Favourite favourite;
+
     Sticker(@NonNull String fileName, long packId, @NonNull Type type) {
         this.fileName = fileName;
         this.packId = packId;
@@ -105,6 +109,15 @@ public class Sticker {
 
     void setHistory(@Nullable History history) {
         this.history = history;
+    }
+
+    @Nullable
+    Favourite getFavourite() {
+        return favourite;
+    }
+
+    void setFavourite(@Nullable Favourite favourite) {
+        this.favourite = favourite;
     }
 
     @TypeConverter

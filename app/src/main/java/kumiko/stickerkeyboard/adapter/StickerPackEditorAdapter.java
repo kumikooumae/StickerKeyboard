@@ -36,16 +36,7 @@ public class StickerPackEditorAdapter extends StickerPackBaseAdapter {
         });
         holder.sticker.setOnLongClickListener(view -> {
             // Edit
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Database db = Database.getInstance(parent.getContext());
-                    db.addFavourite(getSticker(holder.getAdapterPosition()));
-                    IMEService.notifyFavouriteUpdated(parent.getContext());
-                }
-            }).start();
-            Toast.makeText(parent.getContext(), "Added to favourite", Toast.LENGTH_SHORT).show();
-            return true;
+            return false;
         });
         return holder;
     }

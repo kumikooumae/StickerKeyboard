@@ -80,6 +80,12 @@ public class PackActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == DOC_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             List<Uri> uris = new ArrayList<>();

@@ -93,25 +93,27 @@ public abstract class Database extends RoomDatabase {
         return historyStickers;
     }
 
+    // pack.stickers may not contain sticker.history! use historyStickers
     public synchronized void refreshHistory(@NonNull Sticker sticker) {
-        for (int i = 0; i < historyStickers.size(); i++) {
-            if (sticker.getId() == historyStickers.get(i).getId()) {
+        for (int i = 0; i < getHistoryStickersReversed().size(); i++) {
+            if (sticker.getId() == getHistoryStickersReversed().get(i).getId()) {
                 removeFromHistory(i);
                 break;
             }
         }
-        if (historyStickers.size() >= MAX_HISTORIES) {
+        if (getHistoryStickersReversed().size() >= MAX_HISTORIES) {
             removeFromHistory(MAX_HISTORIES);
         }
         History history = new History(sticker.getId());
         history.setId(historyDao().insertHistory(history));
         sticker.setHistory(history);
-        historyStickers.add(0, sticker);
+        getHistoryStickersReversed().add(0, sticker);
     }
 
     private void removeFromHistory(int position) {
         Sticker removed = historyStickers.remove(position);
         historyDao().deleteHistory(removed.getHistory());
+        removed.setHistory(null);
     }
 
     public synchronized List<Sticker> getFavouriteStickers() {
@@ -120,11 +122,20 @@ public abstract class Database extends RoomDatabase {
             favouriteStickers = new ArrayList<>();
             for (Favourite favourite: favourites) {
                 Sticker favouriteSticker = Objects.requireNonNull(stickerDao().getSticker(favourite.getStickerId()));
-                //setfavourite
+                favouriteSticker.setFavourite(favourite);
                 favouriteStickers.add(favouriteSticker);
             }
         }
         return favouriteStickers;
+    }
+
+    public boolean checkFavouriteAdded(@NonNull Sticker sticker) {
+        for (Sticker sticker1: getFavouriteStickers()) {
+            if (sticker1.getId() == sticker.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public synchronized void addFavourite(@NonNull Sticker sticker) {
@@ -133,8 +144,21 @@ public abstract class Database extends RoomDatabase {
                 return;
             }
         }
-        favouriteDao().insertFavourite(new Favourite(sticker.getId()));
-        favouriteStickers.add(sticker);
+        Favourite favourite = new Favourite(sticker.getId());
+        favourite.setId(favouriteDao().insertFavourite(favourite));
+        sticker.setFavourite(favourite);
+        getFavouriteStickers().add(sticker);
+    }
+
+    public synchronized void removeFavourite(@NonNull Sticker sticker) {
+        for (int i = 0; i < getFavouriteStickers().size(); i++) {
+            if (sticker.getId() == getFavouriteStickers().get(i).getId()) {
+                Sticker removed = getFavouriteStickers().remove(i);
+                favouriteDao().deleteFavourite(removed.getFavourite());
+                removed.setFavourite(null);
+                break;
+            }
+        }
     }
 
     public synchronized void addNewEmptyPack(@NonNull String name) {
