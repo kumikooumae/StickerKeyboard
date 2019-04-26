@@ -92,7 +92,7 @@ public class FileHelper {
      * @param context Context
      * @param sticker Sticker to be deleted
      */
-    static synchronized void deleteSticker(@NonNull Context context, @NonNull Sticker sticker) {
+    public static synchronized void deleteSticker(@NonNull Context context, @NonNull Sticker sticker) {
         File file = getStickerFile(context, sticker);
         if (!file.delete()) {
             Log.d(TAG, "deleteSticker: Failed to delete " + getStickerFileName(sticker));

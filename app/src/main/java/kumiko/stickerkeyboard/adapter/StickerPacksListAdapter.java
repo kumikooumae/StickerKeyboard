@@ -1,5 +1,6 @@
 package kumiko.stickerkeyboard.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,8 +16,10 @@ import java.util.List;
 import java.util.Objects;
 
 import kumiko.stickerkeyboard.FileHelper;
+import kumiko.stickerkeyboard.IMEService;
 import kumiko.stickerkeyboard.PackActivity;
 import kumiko.stickerkeyboard.R;
+import kumiko.stickerkeyboard.data.Database;
 import kumiko.stickerkeyboard.data.Sticker;
 import kumiko.stickerkeyboard.data.StickerPack;
 
@@ -50,6 +53,22 @@ public class StickerPacksListAdapter extends RecyclerView.Adapter<StickerPacksLi
         View cardView = Objects.requireNonNull(LayoutInflater.from(parent.getContext()).inflate(R.layout.sticker_pack_card, parent, false));
         final PackViewHolder holder = new PackViewHolder(cardView);
         cardView.setOnClickListener(view -> PackActivity.startPackActivity(view.getContext(), holder.getAdapterPosition()));
+        cardView.setOnLongClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
+            builder.setTitle(R.string.confirm_delete_pack);
+            builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+                int packPosition = holder.getAdapterPosition();
+                new Thread(() -> {
+                    Database db = Database.getInstance(parent.getContext());
+                    db.removePack(packPosition);
+                    IMEService.notifyPacksListUpdated(parent.getContext());
+                }).start();
+                notifyItemRemoved(packPosition);
+            });
+            builder.setNegativeButton(android.R.string.cancel, null);
+            builder.show();
+            return false;
+        });
         return holder;
     }
 

@@ -12,6 +12,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.sqlite.db.SupportSQLiteStatement;
+import kumiko.stickerkeyboard.FileHelper;
 import kumiko.stickerkeyboard.IMEService;
 import kumiko.stickerkeyboard.MyApplication;
 
@@ -168,6 +169,15 @@ public abstract class Database extends RoomDatabase {
         IMEService.notifyPacksListUpdated(MyApplication.getAppContext());
     }
 
+    public synchronized void removePack(int packPosition) {
+        StickerPack pack = getAllStickerPacks().get(packPosition);
+        for (int i = 0; i < pack.getStickers().size(); i++) {
+            removeSticker(packPosition, i);
+        }
+        packs.remove(packPosition);
+        stickerPackDao().deleteStickerPack(pack);
+    }
+
     @NonNull
     public synchronized Sticker addNewSticker(int packPosition, @NonNull Sticker.Type type) {
         // fileName is unused
@@ -183,6 +193,23 @@ public abstract class Database extends RoomDatabase {
         pack.getStickers().add(sticker);
         IMEService.notifyStickerPackUpdated(MyApplication.getAppContext(), packPosition);
         return sticker;
+    }
+
+    public synchronized void removeSticker(int packPosition, int stickerPosition) {
+        StickerPack pack = getAllStickerPacks().get(packPosition);
+        Sticker sticker = pack.getStickers().get(stickerPosition);
+        pack.getStickers().remove(stickerPosition);
+        stickerDao().deleteSticker(sticker);
+        FileHelper.deleteSticker(MyApplication.getAppContext(), sticker);
+
+        for (int i = 0; i < getHistoryStickersReversed().size(); i++) {
+            if (sticker.getId() == getHistoryStickersReversed().get(i).getId()) {
+                removeFromHistory(i);
+                break;
+            }
+        }
+
+        removeFavourite(sticker);
     }
 
     public synchronized String getTags(Sticker sticker) {

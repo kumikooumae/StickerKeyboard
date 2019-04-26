@@ -9,6 +9,8 @@
     <string name="favourite_pack_name">Favourite</string>
     <string name="add_pack">Add pack</string>
     <string name="pack_name">Pack name</string>
+    <string name="confirm_delete_sticker">Delete this sticker?</string>
+    <string name="confirm_delete_pack">Delete this pack?</string>
     <string name="info">Info</string>
     <string name="title_activity_info">InfoActivity</string>
 </resources>
