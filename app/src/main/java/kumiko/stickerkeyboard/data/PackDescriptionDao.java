@@ -8,6 +8,6 @@ import androidx.room.Query;
 @Dao
 public interface PackDescriptionDao {
 
-    @Query("SELECT * FROM " + PackDescription.TABLE_NAME + " WHERE " + PackDescription.PACK + " = :pack")
-    List<PackDescription> getDescriptions(long pack);
+    @Query("SELECT " + PackDescription.DESCRIPTION + " FROM " + PackDescription.TABLE_NAME + " WHERE " + PackDescription.PACK + " = :pack")
+    List<String> getDescriptions(long pack);
 }

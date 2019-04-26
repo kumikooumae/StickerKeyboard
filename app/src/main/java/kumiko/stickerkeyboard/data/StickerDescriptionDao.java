@@ -8,6 +8,6 @@ import androidx.room.Query;
 @Dao
 public interface StickerDescriptionDao {
 
-    @Query("SELECT * FROM " + StickerDescription.TABLE_NAME + " WHERE " + StickerDescription.STICKER + " = :sticker")
-    List<StickerDescription> getDescriptions(long sticker);
+    @Query("SELECT " + StickerDescription.DESCRIPTION + " FROM " + StickerDescription.TABLE_NAME + " WHERE " + StickerDescription.STICKER + " = :sticker")
+    List<String> getDescriptions(long sticker);
 }

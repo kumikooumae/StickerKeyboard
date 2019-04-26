@@ -8,6 +8,6 @@ import androidx.room.Query;
 @Dao
 public interface AuthorNameDao {
 
-    @Query("SELECT * FROM " + AuthorName.TABLE_NAME + " WHERE " + AuthorName.AUTHOR + " = :author")
-    List<AuthorName> getAuthorNames(long author);
+    @Query("SELECT " + AuthorName.NAME + " FROM " + AuthorName.TABLE_NAME + " WHERE " + AuthorName.AUTHOR + " = :author")
+    List<String> getAuthorNames(long author);
 }

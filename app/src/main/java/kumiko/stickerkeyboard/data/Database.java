@@ -174,11 +174,7 @@ public abstract class Database extends RoomDatabase {
     private synchronized String fillTags(List<Tag> tags) {
         StringBuilder stringBuilder = new StringBuilder();
         for (Tag tag: tags) {
-            List<TagName> tagNames = tagNameDao().getTagNames(tag.getId());
-            List<String> names = new ArrayList<>();
-            for (TagName tagName: tagNames) {
-                names.add(tagName.getName());
-            }
+            List<String> names = tagNameDao().getTagNames(tag.getId());
             stringBuilder.append(TextUtils.join(",", names));
             stringBuilder.append("\n");
         }
@@ -186,21 +182,11 @@ public abstract class Database extends RoomDatabase {
     }
 
     public synchronized String getDescriptions(Sticker sticker) {
-        List<StickerDescription> stickerDescriptions = stickerDescriptionDao().getDescriptions(sticker.getId());
-        List<String> strings = new ArrayList<>();
-        for (StickerDescription stickerDescription: stickerDescriptions) {
-            strings.add(stickerDescription.getDescription());
-        }
-        return TextUtils.join("\n", strings);
+        return TextUtils.join("\n", stickerDescriptionDao().getDescriptions(sticker.getId()));
     }
 
     public synchronized String getDescriptions(StickerPack stickerPack) {
-        List<PackDescription> packDescriptions = packDescriptionDao().getDescriptions(stickerPack.getId());
-        List<String> strings = new ArrayList<>();
-        for (PackDescription packDescription: packDescriptions) {
-            strings.add(packDescription.getDescription());
-        }
-        return TextUtils.join("\n", strings);
+        return TextUtils.join("\n", packDescriptionDao().getDescriptions(stickerPack.getId()));
     }
 
     public synchronized String getAuthors(Sticker sticker) {
@@ -216,18 +202,10 @@ public abstract class Database extends RoomDatabase {
     private synchronized String fillAuthors(List<Author> authors) {
         StringBuilder stringBuilder = new StringBuilder();
         for (Author author: authors) {
-            List<AuthorName> authorNames = authorNameDao().getAuthorNames(author.getId());
-            List<String> names = new ArrayList<>();
-            for (AuthorName authorName: authorNames) {
-                names.add(authorName.getName());
-            }
+            List<String> names = authorNameDao().getAuthorNames(author.getId());
             stringBuilder.append(TextUtils.join(",", names));
             stringBuilder.append("\n");
-            List<AuthorContact> authorContacts = authorContactDao().getAuthorContacts(author.getId());
-            List<String> contacts = new ArrayList<>();
-            for (AuthorContact authorContact: authorContacts) {
-                contacts.add(authorContact.getContact());
-            }
+            List<String> contacts = authorContactDao().getAuthorContacts(author.getId());
             stringBuilder.append(TextUtils.join(",", contacts));
             stringBuilder.append("\n\n");
         }

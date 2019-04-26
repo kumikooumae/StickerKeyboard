@@ -12,6 +12,6 @@ public interface TagNameDao {
     @Insert
     long insertTagName(TagName tagName);
 
-    @Query("SELECT * FROM " + TagName.TABLE_NAME + " WHERE " + TagName.TAG + " = :tag")
-    List<TagName> getTagNames(long tag);
+    @Query("SELECT " + TagName.NAME + " FROM " + TagName.TABLE_NAME + " WHERE " + TagName.TAG + " = :tag")
+    List<String> getTagNames(long tag);
 }
